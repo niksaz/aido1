@@ -1,0 +1,5 @@
+challenge: aido1_LF1_r3-v3
+protocol: aido1_remote3-v3
+user-label: "RL solution"
+description: Modified DDPG algorithm
+

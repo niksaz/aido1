@@ -2,11 +2,10 @@
 import traceback
 
 import gym
-import numpy as np
 
 # noinspection PyUnresolvedReferences
 import gym_duckietown_agent  # DO NOT CHANGE THIS IMPORT (the environments are defined here)
-from duckietown_challenges import wrap_solution, ChallengeSolution, ChallengeInterfaceSolution, InvalidEnvironment
+from duckietown_challenges import wrap_solution, ChallengeSolution, ChallengeInterfaceSolution
 
 from wrappers import ImgTransposer, ImgStacker, \
     GrayscaleWrapper, ActionWrapper, ResizeWrapper, SteeringToWheelVelWrapper

@@ -62,16 +62,17 @@ max_action = float(env.action_space.high[0])
 policy = DDPG(state_dim, action_dim, max_action, net_type="cnn")
 try:
     policy.load(filename=file_name, directory=models_dir)
-except:
-    pass
+except FileNotFoundError as err:
+    print('No previous model weights exist:', err.filename)
+    print('Starting from random init')
 
 replay_buffer = utils.ReplayBuffer(args.replay_buffer_max_size)
 
 # Evaluate untrained policy
 evaluations = []
 
-# evaluations.append(evaluate_policy(env, policy))
-# exp.metric("rewards", evaluations[0])
+evaluations.append(evaluate_policy(env, policy))
+exp.metric("rewards", evaluations[0])
 
 total_timesteps = 0
 timesteps_since_eval = 0
@@ -88,11 +89,11 @@ while total_timesteps < args.max_timesteps:
             policy.train(replay_buffer, episode_timesteps, args.batch_size, args.discount, args.tau)
 
         # Evaluate episode
-        # if timesteps_since_eval >= args.eval_freq:
-        #     timesteps_since_eval %= args.eval_freq
-        #     evaluations.append(evaluate_policy(env, policy))
-        #     exp.metric("rewards", evaluations[-1])
-        #     np.savez("./results/{}.npz".format(file_name),evaluations)
+        if timesteps_since_eval >= args.eval_freq:
+            timesteps_since_eval %= args.eval_freq
+            evaluations.append(evaluate_policy(env, policy))
+            exp.metric("rewards", evaluations[-1])
+            np.savez("./results/{}.npz".format(file_name),evaluations)
 
         if args.save_models:
             policy.save(file_name, directory="./pytorch_models")

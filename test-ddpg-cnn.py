@@ -51,7 +51,7 @@ with torch.no_grad():
         env.render()
         rewards = []
         done = False
-        for i in range(500):
+        for i in range(args.max_timesteps):
             if done:
                 break
             action = policy.predict(np.array(obs))

@@ -1,8 +1,8 @@
 import random
 
-import gym
 import numpy as np
 import torch
+from .config import REPEAT
 
 
 def seed(seed):
@@ -57,15 +57,20 @@ class ReplayBuffer(object):
         }
 
 
-def evaluate_policy(env, policy, eval_episodes=10):
+def evaluate_policy(env, policy, max_timesteps=1000, eval_episodes=10):
     avg_reward = 0.
     for _ in range(eval_episodes):
         obs = env.reset()
         done = False
-        while not done:
+        for i in range(max_timesteps):
+            if done:
+                break
             action = policy.predict(np.array(obs))
-            obs, reward, done, _ = env.step(action)
-            avg_reward += reward
+            for _ in range(REPEAT):
+                if done:
+                    break
+                obs, reward, done, _ = env.step(action)
+                avg_reward += reward
 
     avg_reward /= eval_episodes
 

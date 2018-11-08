@@ -107,5 +107,5 @@ venv.bak/
 .idea/
 
 src/
-scripts/pytorch_models
-scripts/results
+pytorch_models
+results

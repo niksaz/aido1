@@ -21,11 +21,8 @@ COPY requirements.txt /workspace
 RUN pip install -r /workspace/requirements.txt
 
 # let's copy all our solution files to our workspace
-# if you have more file use the COPY command to move them to the workspace
-COPY solution.py /workspace
+COPY duckietown_rl /workspace/duckietown_rl
 COPY models /workspace/models
-COPY model.py /workspace
-COPY wrappers.py /workspace
 
 # we make the workspace our working directory
 WORKDIR /workspace
@@ -34,4 +31,4 @@ WORKDIR /workspace
 ENV DUCKIETOWN_SERVER=evaluator
 
 # let's see what you've got there...
-CMD python solution.py
+CMD python -m duckietown_rl.solution

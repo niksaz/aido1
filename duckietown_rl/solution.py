@@ -6,8 +6,8 @@ import gym
 # noinspection PyUnresolvedReferences
 import gym_duckietown_agent  # DO NOT CHANGE THIS IMPORT (the environments are defined here)
 from duckietown_challenges import wrap_solution, ChallengeSolution, ChallengeInterfaceSolution
-
-from wrappers import ImgTransposer, ImgStacker, \
+from .config import REPEAT
+from .wrappers import ImgTransposer, ImgStacker, \
     GrayscaleWrapper, ActionWrapper, ResizeWrapper, SteeringToWheelVelWrapper
 
 def solve(params, cis):
@@ -35,7 +35,7 @@ def solve(params, cis):
     env = ActionWrapper(env)
     env = SteeringToWheelVelWrapper(env)
 
-    # you have to make sure that you're wrapping at least the actions
+    # You have to make sure that you're wrapping at least the actions
     # and observations in the same as during training so that your model
     # receives the same kind of input, because that's what it's trained for
     # (for example if your model is trained on grayscale images and here
@@ -44,7 +44,7 @@ def solve(params, cis):
     # HERE YOU NEED TO CREATE THE POLICY NETWORK SAME AS YOU DID IN THE TRAINING CODE
     # if you aren't using the DDPG baseline code, then make sure to copy your model
     # into the model.py file and that it has a model.predict(state) method.
-    from model import DDPG
+    from .ddpg import DDPG
 
     model = DDPG(state_dim=env.observation_space.shape, action_dim=2, max_action=1, net_type="cnn")
 
@@ -56,18 +56,23 @@ def solve(params, cis):
         # Then we make sure we have a connection with the environment and it is ready to go
         cis.info('Reset environment')
         observation = env.reset()
+        action_last = None
+        action_repeated = REPEAT
 
         # While there are no signal of completion (simulation done)
         # we run the predictions for a number of episodes, don't worry, we have the control on this part
         while True:
-            # we passe the observation to our model, and we get an action in return
-            action = model.predict(observation)
-            # we tell the environment to perform this action and we get some info back in OpenAI Gym style
-            observation, reward, done, info = env.step(action)
-            # here you may want to compute some stats, like how much reward are you getting
+            # We repeat the same action several times
+            if action_repeated == REPEAT:
+                action_last = model.predict(observation)
+                action_repeated = 0
+            # We tell the environment to perform this action and we get some info back in OpenAI Gym style
+            observation, reward, done, info = env.step(action_last)
+            action_repeated += 1
+            # Here you may want to compute some stats, like how much reward are you getting
             # notice, this reward may no be associated with the challenge score.
 
-            # it is important to check for this flag, the Evalution Engine will let us know when should we finish
+            # It is important to check for this flag, the Evalution Engine will let us know when should we finish
             # if we are not careful with this the Evaluation Engine will kill our container and we will get no score
             # from this submission
             if 'simulation_done' in info:
@@ -76,6 +81,8 @@ def solve(params, cis):
             if done:
                 cis.info('Episode done; calling reset()')
                 env.reset()
+                action_last = None
+                action_repeated = REPEAT
 
     finally:
         # release CPU/GPU resources, let's be friendly with other users that may need them
@@ -86,7 +93,6 @@ def solve(params, cis):
             msg = 'Could not call model.close():\n%s' % traceback.format_exc()
             cis.error(msg)
     cis.info('Graceful exit of solve()')
-
 
 
 class Submission(ChallengeSolution):

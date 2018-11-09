@@ -104,38 +104,38 @@ class Net(nn.Module):
             if module_config['name'] in ('inputs', 'outputs'):
                 for module_config_rec in module_config['modules']:
                     net = self._build_simple_net(module_config_rec)
-
                     if module_config['name'] == 'inputs':
                         self.input_nets.append(net)
                     if module_config['name'] == 'outputs':
                         self.output_nets.append(net)
 
-    def _build_simple_net(self, config):
+    @staticmethod
+    def _build_simple_net(config):
         net = MetaNet()
 
         last_shape = None
 
         for module_config in config:
-            if module_config['name'] == 'input':
+            module_name = module_config['name']
+            if module_name == 'input':
                 last_shape = module_config['in_features']
                 continue
-
-            if module_config['name'] == 'input_channeled':
+            if module_name == 'input_channeled':
                 last_shape = module_config['in_channels']
                 continue
 
-            if module_config['name'] in ('linear', ):
+            if module_name == 'linear':
                 module_config['args']['in_features'] = last_shape
                 last_shape = module_config['args']['out_features']
-
-            elif module_config['name'] in ('conv2d',):
+            elif module_name == 'conv_2d':
                 module_config['args']['in_channels'] = last_shape
                 last_shape = module_config['args']['out_channels']
-
-            elif module_config["name"] == 'batch_norm_2d':
+            elif module_name == 'batch_norm_2d':
                 if 'args' not in module_config.keys():
                     module_config['args'] = {}
                     module_config['args']['num_features'] = last_shape
+            elif module_name == 'flatten':
+                last_shape = module_config['args']['out_features']
 
             module = get_module(module_config)
 

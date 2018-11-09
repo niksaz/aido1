@@ -71,7 +71,7 @@
           {"name": "leaky_relu"},
           {"name": "batch_norm_2d"},
 
-          {"name": "flatten"},
+          {"name": "flatten", "args": {"out_features": 4032}},
 
           {"name": "dropout", "args": {"p": 0.5}},
 
@@ -143,7 +143,7 @@
           {"name": "leaky_relu"},
           {"name": "batch_norm_2d"},
 
-          {"name": "flatten"},
+          {"name": "flatten", "args": {"out_features": 4032}},
 
           {"name": "dropout", "args": {"p": 0.5}},
 

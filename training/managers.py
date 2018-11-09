@@ -128,15 +128,14 @@ class TrainManager(BaseManager):
 
         for p_id in range(self.training_config['num_threads_exploring']):
             internal_env_args = {'env_type': 'normal',
-                                 'env_init_args': {'visualize': False,
-                                                   'integrator_accuracy': self.config['environment']['env_accuracy']},
+                                 'env_init_args': {},
                                  'env_config': self.config['environment']['core']}
 
             p = torch_mp.Process(
                 target=explore_single_thread,
                 args=('exploration', self.config, p_id,
-                      self.models[p_id % self.training_config['num_threads_training']], internal_env_args,
-                      episode_queues, self.best_reward,
+                      self.models[p_id % self.training_config['num_threads_training']],
+                      internal_env_args, episode_queues, self.best_reward,
                       self.global_episode, self.global_update_step)
             )
             p.start()
@@ -147,8 +146,7 @@ class TrainManager(BaseManager):
 
         for p_id in range(self.training_config['num_threads_exploiting']):
             internal_env_args = {'env_type': 'normal',
-                                 'env_init_args': {'visualize': False,
-                                                   'integrator_accuracy': self.config['environment']['env_accuracy']},
+                                 'env_init_args': {},
                                  'env_config': self.config['environment']['core']}
 
             p = torch_mp.Process(

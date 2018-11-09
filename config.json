@@ -1,10 +1,6 @@
 {
   "environment": {
-    "core": {
-      "model": "3D",
-      "prosthetic": true,
-      "difficulty": 1
-    },
+    "core": {},
     "env_accuracy": 1e-3,
     "rotate_coors": true,
     "wrapper": {
@@ -180,17 +176,16 @@
     "init_actor": false,
     "init_critic": false,
     "model_path": "",
-    "num_threads_training": 4,
-    "num_threads_sampling": 4,
+    "num_threads_training": 1,
+    "num_threads_sampling": 1,
     "multimodel_parallelism_enabled": true,
     "sampling_queue_max_len": 32,
-    "num_threads_model_workers": 4,
-    "num_threads_exploring": 0,
-    "num_threads_exploring_virtual": 48,
-    "num_threads_exploiting": 0,
-    "num_threads_exploiting_virtual": 4,
-    "transform_exploiting_target": false,
-    "every_second_random": false,
+    "num_threads_model_workers": 0,
+    "num_threads_exploring": 1,
+    "num_threads_exploring_virtual": 0,
+    "num_threads_exploiting": 1,
+    "num_threads_exploiting_virtual": 0,
+    "every_second_random": true,
     "max_episodes": 1200,
     "max_update_steps": 16000000,
     "update_steps_between_update": 10000,

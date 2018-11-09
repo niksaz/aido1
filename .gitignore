@@ -107,6 +107,6 @@ venv.bak/
 .idea/
 
 src/
-models/
+final_models/
 pytorch_models
 results/

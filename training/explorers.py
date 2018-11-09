@@ -184,13 +184,13 @@ class SingleThreadExplorer(Explorer):
                 action = self.model.act(
                     observation_transformed
                 )
-            elif self.explore_after < steps and self.config['training']['every_second_random'] and self.p_id % 2 == 0 \
+            elif self.config['training']['every_second_random'] and self.p_id % 2 == 0 \
                     and random.uniform(0.0, 1.0) < self.config['training']['epsilon_ratio'] * epsilon:
                 action = np.random.random(self.config['model']['num_action']).astype(dtype=np.float32)
             else:
                 action = self.model.act(
                     observation_transformed,
-                    noise=epsilon * sampled_action_noise if self.explore_after < steps else 0
+                    noise=epsilon * sampled_action_noise
                 )
             episode_timings['model'] += (time.time() - model_start)
 

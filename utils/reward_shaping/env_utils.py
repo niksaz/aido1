@@ -1,5 +1,7 @@
 import copy
-import numpy as np
+
+from utils.reward_shaping.additive_functions import *
+from utils.reward_shaping.aggregation_functions import *
 from collections import deque
 
 from scipy.misc import imresize

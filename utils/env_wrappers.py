@@ -6,10 +6,8 @@ import time
 import numpy as np
 import requests
 import torch.multiprocessing as torch_mp
-from osim.env import ProstheticsEnv
-from osim.http.client import Client
 from requests.exceptions import RequestException
-
+from duckietown_rl.env import launch_env
 from utils.graphics import VirtualGraphics
 from utils.math_utils import rotate_coors
 from utils.reward_shaping.env_utils import Rewarder, Transformer, TargetTransformer
@@ -48,48 +46,9 @@ class BaseEnvironment(metaclass=abc.ABCMeta):
         gc.collect()
 
         if internal_env_type == 'normal':
-            self.env = ProstheticEnvironmentWrapper(**env_init_args)
-        elif internal_env_type == 'proxy':
-            self.env = ProstheticEnvironmentProxyWrapper(**env_init_args)
+            self.env = DuckietownEnvironmentWrapper(**env_init_args)
         elif internal_env_type == 'virtual':
             self.env = VirtualEnvironment(**env_init_args)
-        elif internal_env_type == 'submit':
-            self.env = SubmitEnvironmentWrapper(**env_init_args)
-        elif internal_env_type == 'visualizer':
-            self.env = VisualizeEnvironmentWrapper(**env_init_args)
-
-
-class VisualizeEnvironmentWrapper(BaseEnvironment):
-    def get_observation(self):
-        pass
-
-    def __init__(self, env_init_args, env_type, visualizers_configs):
-        self._create_env_from_type(env_init_args, env_type)
-        self.visualizers_configs = visualizers_configs
-
-    def collect_garbage(self):
-        return self.env.collect_garbage()
-
-    def step(self, action, project):
-        self.step_counter += 1
-        observation, reward, done, n = self.env.step(action, project)
-        for vis in self.visualizers:
-            vis.refresh_frame(observation, reward, self.step_counter)
-        return observation, reward, done, n
-
-    def change_model(self, **kwargs):
-        return self.env.change_model(**kwargs)
-
-    def reset(self, project):
-        self._init_visualizers()
-        observation = self.env.reset(project)
-        for vis in self.visualizers:
-            vis.refresh_frame(observation, 0., self.step_counter)
-        return observation
-
-    def _init_visualizers(self):
-        self.step_counter = 0
-        self.visualizers = [VirtualGraphics(config) for config in self.visualizers_configs]
 
 
 class VirtualEnvironment(BaseEnvironment):
@@ -146,119 +105,12 @@ class VirtualEnvironment(BaseEnvironment):
                                                                                              port=self.port_tcp))
 
 
-def env_worker(in_command, out_result, integrator_accuracy=5e-5, max_steps=None):
-    env = ProstheticEnvironmentWrapper(visualize=False, integrator_accuracy=integrator_accuracy, max_steps=max_steps)
-
-    while True:
-        command, kwargs = in_command.recv()
-        if command == 'step':
-            result = env.step(**kwargs)
-        elif command == 'reset':
-            result = env.reset(**kwargs)
-        elif command == 'change_model':
-            result = env.change_model(**kwargs)
-
-        out_result.send(result)
-
-
-class ProstheticEnvironmentProxyWrapper(BaseEnvironment):
-    timeout = 180
-
-    def __init__(self, visualize, integrator_accuracy=5e-5, max_steps=None):
-        self.visualize = visualize
-        self.integrator_accuracy = integrator_accuracy
-        self.model = None
-        self.prosthetic = None
-        self.difficulty = None
-        self.seed = None
-        self.daemon_process = None
-        self.in_command = None
-        self.out_command = None
-        self.in_result = None
-        self.out_result = None
-        self.observation = None
-        self.max_steps = max_steps
-        self._init_conns()
-        self._start_daemon()
-
-    def _init_conns(self):
-        if self.in_command is not None:
-            self.in_command.close()
-
-        if self.out_command is not None:
-            self.out_command.close()
-
-        if self.in_result is not None:
-            self.in_result.close()
-
-        if self.out_result is not None:
-            self.out_result.close()
-
-        self.in_command, self.out_command = torch_mp.Pipe(duplex=False)
-        self.in_result, self.out_result = torch_mp.Pipe(duplex=False)
-
-    def _start_daemon(self):
-        self.daemon_process = torch_mp.Process(
-            target=env_worker,
-            args=(self.in_command, self.out_result, self.integrator_accuracy, self.max_steps)
-        )
-        self.daemon_process.daemon = True
-        self.daemon_process.start()
-
-    def _perform_command(self, command, kwargs):
-        self.out_command.send((command, kwargs))
-        if self.in_result.poll(self.timeout):
-            return self.in_result.recv()
-        else:
-            self._init_conns()
-            self.collect_garbage()
-            return 'restart'
-
-    def step(self, action, project):
-        result = self._perform_command('step', {'action': action, 'project': project})
-        if result == 'restart':
-            self.observation = None
-            return 'restart', 'restart', 'restart', 'restart'
-        else:
-            self.observation = result[0]
-            return result
-
-    def reset(self, project):
-        gc.collect()
-        torch_mp.active_children()
-        result = self._perform_command('reset', {'project': project})
-        self.observation = result
-        return result
-
-    def get_observation(self):
-        return self.observation
-
-    def change_model(self, model, prosthetic, difficulty, seed, max_steps=None):
-        if self.model is None:
-            self.model = model
-            self.prosthetic = prosthetic
-            self.max_steps = max_steps
-            self.difficulty = difficulty
-            self.seed = seed
-        self._perform_command('change_model', {'model': model, 'prosthetic': prosthetic,
-                                               'difficulty': difficulty, 'seed': seed, 'max_steps': max_steps})
-
-    def collect_garbage(self):
-        self.daemon_process.terminate()
-        torch_mp.active_children()
-        self._start_daemon()
-        self.change_model(self.model, self.prosthetic, self.difficulty, self.seed)
-
-
-class ProstheticEnvironmentWrapper(BaseEnvironment):
+class DuckietownEnvironmentWrapper(BaseEnvironment):
     def __init__(self, visualize, integrator_accuracy=5e-5, max_steps=None):
         self.visualize = visualize
         self.time_limit = max_steps
         self.integrator_accuracy = integrator_accuracy
-        self.env = ProstheticsEnv(visualize=self.visualize, integrator_accuracy=self.integrator_accuracy)
-        if self.time_limit is not None:
-            self.env.time_limit = self.time_limit
-            self.env.spec.timestep_limit = self.time_limit
+        self.env = launch_env()
         self.model = None
         self.prosthetic = None
         self.difficulty = None
@@ -294,58 +146,11 @@ class ProstheticEnvironmentWrapper(BaseEnvironment):
         return "ok"
 
     def collect_garbage(self):
-        self.env = ProstheticsEnv(visualize=self.visualize)
+        self.env = launch_env()
         self.change_model(self.model, self.prosthetic, self.difficulty, self.seed)
 
 
-class SubmitEnvironmentWrapper(BaseEnvironment):
-    def __init__(self, test_speed):
-        self.env = Client(EnvironmentWrapper.remote_base)
-        self.counter = 0
-        self.test_speed = test_speed
-        self.observation = None
-
-    def step(self, action, project):
-        action = action.tolist()
-        observation, reward, done, info = self.env.env_step(action, render=True)
-        if self.test_speed:
-            observation["target_vel"] = np.array([1.25, 0., 0.])
-        self.observation = observation
-        return observation, reward, done, info
-
-    def reset(self, project):
-        if self.counter == 0:
-            observation = self.env.env_create(EnvironmentWrapper.crowdai_token, env_id='ProstheticsEnv')
-        else:
-            observation = self.env.env_reset()
-
-        if observation is None:
-            self.env.submit()
-            return observation
-
-        self.counter += 1
-
-        if self.test_speed:
-            observation["target_vel"] = np.array([1.25, 0., 0.])
-
-        self.observation = observation
-
-        return observation
-
-    def get_observation(self):
-        return self.observation
-
-    def change_model(self, model, prosthetic, difficulty, seed, max_steps=None):
-        pass
-
-    def collect_garbage(self):
-        pass
-
-
 class EnvironmentWrapper(BaseEnvironment):
-    remote_base = "http://grader.crowdai.org:1730"
-    crowdai_token = "25ed6861f07169704b55127aad34c33a"
-
     def __init__(self, config, internal_env_args, transfer):
         self.config = config
         self.multimodel_enabled = self.config["model"].get("enable_multimodel", False)

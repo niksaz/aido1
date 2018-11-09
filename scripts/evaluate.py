@@ -27,7 +27,7 @@ def evaluate(config, directory, directories, seed_plus):
     # config['environment']['wrapper']['features']['body_rot_relative'] = ["pelvis", "torso", "head"]
     # config['environment']['wrapper']['repeat_actions'] = 3
 
-    internal_env_args = {'env_type': 'visualizer',
+    internal_env_args = {'env_type': 'normal',
                          'env_init_args': {
                              'env_type': 'normal',
                              'env_init_args': {

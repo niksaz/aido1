@@ -148,7 +148,7 @@ class TrainManager(BaseManager):
             episode_queues = sum(self.episode_queues, [])
 
         for p_id in range(self.training_config['num_threads_exploring']):
-            internal_env_args = {'env_type': 'proxy',
+            internal_env_args = {'env_type': 'normal',
                                  'env_init_args': {'visualize': False,
                                                    'integrator_accuracy': self.config['environment']['env_accuracy']},
                                  'env_config': self.config['environment']['core']}
@@ -169,7 +169,7 @@ class TrainManager(BaseManager):
             episode_queues = sum(self.episode_queues, [])
 
         for p_id in range(self.training_config['num_threads_exploiting']):
-            internal_env_args = {'env_type': 'proxy',
+            internal_env_args = {'env_type': 'normal',
                                  'env_init_args': {'visualize': False,
                                                    'integrator_accuracy': self.config['environment']['env_accuracy']},
                                  'env_config': self.config['environment']['core']}

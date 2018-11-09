@@ -49,7 +49,7 @@ def solve(params, cis):
     model = DDPG(state_dim=env.observation_space.shape, action_dim=2, max_action=1, net_type="cnn")
 
     try:
-        model.load("model", "models")
+        model.load("model", "final_models")
 
         # === END SUBMISSION ===
 

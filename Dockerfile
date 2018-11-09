@@ -22,7 +22,7 @@ RUN pip install -r /workspace/requirements.txt
 
 # let's copy all our solution files to our workspace
 COPY duckietown_rl /workspace/duckietown_rl
-COPY models /workspace/models
+COPY final_models /workspace/final_models
 
 # we make the workspace our working directory
 WORKDIR /workspace

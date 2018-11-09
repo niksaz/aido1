@@ -10,48 +10,17 @@
     "wrapper": {
       "repeat_actions": 3,
       "reward_scale": 1.0,
-      "fail_reward": 0.0,
-      "staying_alive_reward": 0.0,
-      "target_noise": 0.0025,
-      "add_rewards": [],
-      "features": {
-        "body_pos_relative": ["pelvis", "torso", "head"],
-        "body_rot_relative": ["pelvis"],
-        "mass_center_relative": ["pelvis"],
-        "raw_features": ["forces"],
-        "target_vel": true,
-        "time_from_change": false,
-        "raw_height": ["pelvis", "torso", "head"],
-        "raw_vel": ["pelvis", "torso"],
-        "raw_rot": ["pelvis"]
-      },
-      "potential_functions": {
-      },
       "reward_functions": {
       },
       "reward_aggregations": [
         {
-          "class": "TransformAndBound",
-          "config": {
-            "move": -19.0,
-            "scale": 2.0,
-            "bound": 1.0,
-            "lower_bound": -0.8
-          }
+          "class": "BaselineAggregationFunction",
+          "config": {}
         }
-      ],
-      "target_transformer_type": "random",
-      "target_transformer_config": {
-        "enable_bad_seeds": false,
-        "bad_seed_steps_border": 1000,
-        "bad_seed_reward_per_step_border": 9.75
-      }
+      ]
     }
   },
   "model": {
-    "angle_dividers": [0.0],
-    "speed_dividers": [1.25],
-    "enable_multimodel": false,
     "num_action": 2,
     "actor": [
       {"name": "inputs", "modules": [
@@ -208,9 +177,9 @@
   },
   "training": {
     "transfer": false,
-    "init_actor": true,
-    "init_critic": true,
-    "model_path": "/data/svidchenko/middle_learning/more_features_3/all2/saved_models/exploiting_virtual_thread_0/episode_100_reward_9901.84/",
+    "init_actor": false,
+    "init_critic": false,
+    "model_path": "",
     "num_threads_training": 4,
     "num_threads_sampling": 4,
     "multimodel_parallelism_enabled": true,
@@ -222,13 +191,13 @@
     "num_threads_exploiting_virtual": 4,
     "transform_exploiting_target": false,
     "every_second_random": false,
-    "max_episodes": 320,
+    "max_episodes": 1200,
     "max_update_steps": 16000000,
     "update_steps_between_update": 10000,
     "critic_loss": "mse_loss",
     "global_seed": 42,
-    "log_dir": "/data/svidchenko/middle_learning/more_features_3/all9/logs",
-    "save_dir": "/data/svidchenko/middle_learning/more_features_3/all9/saved_models",
+    "log_dir": "/data/svidchenko/duckietown/baseline/logs",
+    "save_dir": "/data/svidchenko/duckietown/baseline/saved_models",
     "saving_replays": false,
     "replays_dir": "/mnt/junkyard/data/prosthetics/replays",
     "grad_norm": 1000.0,
@@ -239,7 +208,7 @@
       "lr": {
         "type": "linear",
         "args": {
-          "initial_value": 0.0004,
+          "initial_value": 0.002,
           "final_value": 0.00001,
           "max_step": 4000000
         }
@@ -249,7 +218,7 @@
       "lr": {
         "type": "linear",
         "args": {
-          "initial_value": 0.0012,
+          "initial_value": 0.004,
           "final_value": 0.00001,
           "max_step": 4000000
         }
@@ -271,7 +240,7 @@
     "rp_sigma": 0.3,
     "rp_sigma_min": 0.15,
     "epsilon_cycle_len": 32,
-    "initial_epsilon": 0.16,
+    "initial_epsilon": 0.5,
     "final_epsilon": 0.025,
     "epsilon_ratio": 0.5,
     "max_episode_steps": 1500,

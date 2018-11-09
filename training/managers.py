@@ -86,23 +86,11 @@ class TrainManager(BaseManager):
             self.models.append(model)
             self.proxy_models.append(proxy_model)
 
-        self.multimodel_parallelism = config['model'].get("enable_multimodel", False) and \
-                                      self.training_config.get("multimodel_parallelism_enabled", False)
-        if self.multimodel_parallelism:
-            self.submodels_count = len(self.target_model.models)
-
         self.processes = []
 
-        self.episode_queues = [[torch_mp.Queue() for _ in range(self.submodels_count)]
-                               for _ in range(self.training_config['num_threads_sampling'])] \
-            if self.multimodel_parallelism \
-            else [torch_mp.Queue() for _ in range(self.training_config['num_threads_sampling'])]
+        self.episode_queues = [torch_mp.Queue() for _ in range(self.training_config['num_threads_sampling'])]
 
-        self.sample_queues = [[torch_mp.Queue(maxsize=self.training_config['sampling_queue_max_len'])
-                               for _ in range(self.submodels_count)]
-                              for _ in range(self.training_config['num_threads_training'])] \
-            if self.multimodel_parallelism \
-            else [torch_mp.Queue(maxsize=self.training_config['sampling_queue_max_len']) for _ in
+        self.sample_queues = [torch_mp.Queue(maxsize=self.training_config['sampling_queue_max_len']) for _ in
                   range(self.training_config['num_threads_training'])]
 
         self.action_conns = [torch_mp.Pipe(duplex=False) for _ in
@@ -114,16 +102,9 @@ class TrainManager(BaseManager):
         self.observation_queue = torch_mp.Queue()
         self.action_queue = torch_mp.Queue()
 
-        self.start_barrier = [torch_mp.Barrier(self.training_config['num_threads_training'])
-                              for _ in range(self.submodels_count)] \
-            if self.multimodel_parallelism \
-            else torch_mp.Barrier(self.training_config['num_threads_training'])
-        self.finish_barrier = [torch_mp.Barrier(self.training_config['num_threads_training'])
-                               for _ in range(self.submodels_count)] \
-            if self.multimodel_parallelism \
-            else torch_mp.Barrier(self.training_config['num_threads_training'])
-        self.update_lock = [torch_mp.Lock() for _ in range(self.submodels_count)] \
-            if self.multimodel_parallelism else torch_mp.Lock()
+        self.start_barrier = torch_mp.Barrier(self.training_config['num_threads_training'])
+        self.finish_barrier = torch_mp.Barrier(self.training_config['num_threads_training'])
+        self.update_lock = torch_mp.Lock()
 
         self.best_reward = Value('f', 0.0)
         self.global_episode = Value('i', 0)
@@ -144,8 +125,6 @@ class TrainManager(BaseManager):
 
     def _explore(self):
         episode_queues = self.episode_queues
-        if self.multimodel_parallelism:
-            episode_queues = sum(self.episode_queues, [])
 
         for p_id in range(self.training_config['num_threads_exploring']):
             internal_env_args = {'env_type': 'normal',
@@ -165,8 +144,6 @@ class TrainManager(BaseManager):
 
     def _exploit(self):
         episode_queues = self.episode_queues
-        if self.multimodel_parallelism:
-            episode_queues = sum(self.episode_queues, [])
 
         for p_id in range(self.training_config['num_threads_exploiting']):
             internal_env_args = {'env_type': 'normal',
@@ -186,46 +163,23 @@ class TrainManager(BaseManager):
     def _sample(self):
         for p_id, sample_queue, episode_queue in zip(range(self.training_config['num_threads_sampling']),
                                                      self.sample_queues, self.episode_queues):
-            if self.multimodel_parallelism:
-                for mi, (sq, eq) in enumerate(zip(sample_queue, episode_queue)):
-                    p = torch_mp.Process(
-                        target=client_sampling_worker,
-                        args=(self.config, p_id, self.global_update_step, [sq], eq, mi)
-                    )
-                    p.start()
-                    self.processes.append(p)
-
-            else:
-                p = torch_mp.Process(
-                    target=client_sampling_worker,
-                    args=(self.config, p_id, self.global_update_step, [sample_queue], episode_queue)
-                )
-                p.start()
-                self.processes.append(p)
+            p = torch_mp.Process(
+                target=client_sampling_worker,
+                args=(self.config, p_id, self.global_update_step, [sample_queue], episode_queue)
+            )
+            p.start()
+            self.processes.append(p)
 
     def _train(self):
         for p_id, sample_queue in zip(range(self.training_config['num_threads_training']), self.sample_queues):
-            if self.multimodel_parallelism:
-                for i in range(self.submodels_count):
-                    p = torch_mp.Process(
-                        target=train_single_thread,
-                        args=(self.config, p_id, self.target_model.models[i], self.proxy_models[p_id].models[i],
-                              [model.models[i] for model in self.models],
-                              self.start_barrier[i], self.finish_barrier[i], self.update_lock[i],
-                              sample_queue[i], self.best_reward, self.global_episode, self.global_update_step)
-                    )
-                    p.start()
-                    self.processes.append(p)
-
-            else:
-                p = torch_mp.Process(
-                    target=train_single_thread,
-                    args=(self.config, p_id, self.target_model, self.proxy_models[p_id], self.models,
-                          self.start_barrier, self.finish_barrier, self.update_lock,
-                          sample_queue, self.best_reward, self.global_episode, self.global_update_step)
-                )
-                p.start()
-                self.processes.append(p)
+            p = torch_mp.Process(
+                target=train_single_thread,
+                args=(self.config, p_id, self.target_model, self.proxy_models[p_id], self.models,
+                       self.start_barrier, self.finish_barrier, self.update_lock,
+                      sample_queue, self.best_reward, self.global_episode, self.global_update_step)
+            )
+            p.start()
+            self.processes.append(p)
 
     def _run_virtual_models(self):
         for p_id in range(self.training_config['num_threads_model_workers']):
@@ -260,8 +214,6 @@ class TrainManager(BaseManager):
         in_action_conns = self._get_in_connections(self.action_conns)
 
         episode_queues = self.episode_queues
-        if self.multimodel_parallelism:
-            episode_queues = sum(self.episode_queues, [])
 
         for p_id in range(self.training_config['num_threads_exploring_virtual']):
             model = RemoteModel(in_action_conn=in_action_conns[p_id],
@@ -289,8 +241,6 @@ class TrainManager(BaseManager):
     def _exploit_virtual(self):
 
         episode_queues = self.episode_queues
-        if self.multimodel_parallelism:
-            episode_queues = sum(self.episode_queues, [])
 
         for p_id in range(self.training_config['num_threads_exploiting_virtual']):
             internal_env_args = {'env_type': 'virtual',

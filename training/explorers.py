@@ -46,14 +46,8 @@ class SingleThreadExplorer(Explorer):
             self.model.train()
             self.model.to(device)
             self.training_model = model
-            if not self.config['training'].get('transform_exploiting_target', False):
-                self.config['environment']['wrapper']['target_transformer_type'] = 'normal'
-                self.config['environment']['wrapper']['target_noise'] = 0.
-                self.config['environment']['wrapper']['target_transformer_config']['enable_bad_seeds'] = False
-
         else:
             self.model = model
-            internal_env_args['env_config']['max_steps'] = config['training'].get('max_episode_steps', None)
 
         self.explorer_seed = config['training']['global_seed'] + MAGIC_NUMBER * self.p_id
         self.explore_after = config['training'].get('explore_after', 0)
@@ -132,10 +126,6 @@ class SingleThreadExplorer(Explorer):
 
                 replay, timings = self._explore_episode(action_random_process, epsilon, episode_metrics, training_config)
 
-                if training_config['saving_replays']:
-                    self._save_replay(replay, '{}/episode_{}_transformed'.format(replays_dir, episode_counter))
-                    self._save_replay(self.environment.get_raw_replay(), '{}/episode_{}_raw'.format(replays_dir,
-                                                                                                    episode_counter))
                 for episode_queue in self.episodes_queues:
                     episode_queue.put(replay)
 

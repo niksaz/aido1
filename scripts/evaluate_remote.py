@@ -239,10 +239,6 @@ def multitest(model_sets, log, averaging_models=(2, 3, 4), seeds_per_thread=4, r
                 directory = directories[0]
                 dirs = list(reversed(directories))
                 config = parse_config(directory)
-                config["environment"]["wrapper"]["target_noise"] = 0.
-                config["environment"]["wrapper"]["target_transformer_type"] = "normal"
-                config["environment"]["wrapper"]["repeat_actions"] = 3
-                config["training"]["max_episode_steps"] = 1000
 
                 rewards, modified_rewards, step_counts, infos, rws = evaluate(config, dirs,
                                                                               seeds_per_thread=seeds_per_thread,

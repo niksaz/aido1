@@ -3,12 +3,11 @@ import gc
 import json
 import time
 
-import numpy as np
 import requests
-import torch.multiprocessing as torch_mp
 from requests.exceptions import RequestException
+
 from duckietown_rl.env import launch_env
-from utils.reward_shaping.env_utils import Rewarder, Transformer, TargetTransformer
+from utils.reward_shaping.env_utils import Rewarder, Transformer
 from utils.util import cut_off_leg
 
 MAX_ITER = 1000

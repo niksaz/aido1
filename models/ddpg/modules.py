@@ -20,6 +20,7 @@ def get_module(config):
         return nn.LeakyReLU()
     if config['name'] == 'tanh':
         return nn.Tanh()
+    raise AssertionError('Unknown module named ' + config['name'])
 
 
 def fanin_init(size, fanin=None):

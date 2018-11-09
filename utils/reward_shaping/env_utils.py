@@ -1,6 +1,9 @@
+import copy
+
 from utils.reward_shaping.additive_functions import *
 from utils.reward_shaping.aggregation_functions import *
 from collections import deque
+
 from scipy.misc import imresize
 from skimage import color
 

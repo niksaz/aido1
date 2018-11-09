@@ -25,6 +25,6 @@ def get_ddpg_args_test():
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", default=0, type=int)  # Sets Gym, PyTorch and Numpy seeds
     parser.add_argument("--experiment", default=3, type=int)
-    parser.add_argument("--max_timesteps", default=1000, type=int)  # How many steps to test the policy on
+    parser.add_argument("--max_timesteps", default=500, type=int)  # How many steps to test the policy on
     
     return parser.parse_args()

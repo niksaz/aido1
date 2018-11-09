@@ -46,7 +46,6 @@ env = ImgTransposer(env)
 env = ImgStacker(env)
 
 env = ActionWrapper(env)
-env = DtRewardWrapper(env)
 
 env = SteeringToWheelVelWrapper(env)
 
@@ -123,11 +122,11 @@ while total_timesteps < args.max_timesteps:
     for _ in range(REPEAT):
         if done:
             break
-        # Perform action
+        # Perform selected action
         obs, reward, done, _ = env.step(action)
-        print('action', action)
         repeat_reward += reward
 
+    print('action reward', action, repeat_reward)
     episode_reward += repeat_reward
     episode_timesteps += 1
     total_timesteps += 1

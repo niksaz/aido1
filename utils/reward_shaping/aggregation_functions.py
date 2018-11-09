@@ -1,7 +1,5 @@
 import abc
 
-import numpy as np
-
 
 class RewardAggregationFunction:
     @abc.abstractclassmethod

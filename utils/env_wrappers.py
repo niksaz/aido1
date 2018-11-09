@@ -103,8 +103,7 @@ class VirtualEnvironment(BaseEnvironment):
 
 
 class DuckietownEnvironmentWrapper(BaseEnvironment):
-    def __init__(self, visualize, integrator_accuracy=5e-5):
-        self.visualize = visualize
+    def __init__(self):
         self.env = launch_env()
         self.observation = None
         self.seed = None
@@ -122,10 +121,8 @@ class DuckietownEnvironmentWrapper(BaseEnvironment):
         return self.observation
 
     def change_model(self, seed):
-        if self.seed is None:
-            self.seed = seed
-
-        self.env.change_model(seed)
+        self.seed = seed
+        self.env.seed(seed)
 
         return "ok"
 

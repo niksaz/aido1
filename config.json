@@ -56,61 +56,152 @@
     "actor": [
       {"name": "inputs", "modules": [
         [
-          {"name": "input", "in_features": 510},
+          {"name": "input_channeled", "in_channels": 3},
 
-          {"name": "noise_linear", "args": {"out_features": 512, "bias": true, "factorised": false}},
-          {"name": "elu"},
-          {"name": "layer_norm"},
+          {"name": "conv_2d", "args": {
+            "in_channels": 3,
+            "out_channels": 32,
+            "kernel_size": 8,
+            "stride": 2,
+            "padding": 0,
+            "weight_init": "xavier_normal"
+          }},
+          {"name": "leaky_relu"},
+          {"name": "batch_norm_2d"},
 
-          {"name": "noise_linear", "args": {"out_features": 512, "bias": true, "factorised": false}},
-          {"name": "elu"},
-          {"name": "layer_norm"}
+          {"name": "conv_2d", "args": {
+            "in_channels": 32,
+            "out_channels": 32,
+            "kernel_size": 4,
+            "stride": 2,
+            "padding": 0,
+            "weight_init": "xavier_normal"
+          }},
+          {"name": "leaky_relu"},
+          {"name": "batch_norm_2d"},
+
+          {"name": "conv_2d", "args": {
+            "in_channels": 32,
+            "out_channels": 32,
+            "kernel_size": 4,
+            "stride": 2,
+            "padding": 0,
+            "weight_init": "xavier_normal"
+          }},
+          {"name": "leaky_relu"},
+          {"name": "batch_norm_2d"},
+
+          {"name": "conv_2d", "args": {
+            "in_channels": 32,
+            "out_channels": 32,
+            "kernel_size": 4,
+            "stride": 1,
+            "padding": 0,
+            "weight_init": "xavier_normal"
+          }},
+          {"name": "leaky_relu"},
+          {"name": "batch_norm_2d"},
+
+          {"name": "flatten"},
+
+          {"name": "dropout", "args": {"p": 0.5}},
+
+          {"name": "linear", "args": {
+            "out_features": 512,
+            "weight_init": "xavier_normal"
+          }},
+          {"name": "leaky_relu"}
         ]
       ]},
       {"name": "outputs", "modules": [
         [
           {"name": "input", "in_features": 512},
 
-          {"name": "noise_linear", "args": {"out_features": 512, "bias": true, "factorised": false}},
-          {"name": "elu"},
-          {"name": "layer_norm"},
-
-          {"name": "noise_linear", "args": {"out_features": 512, "bias": true, "factorised": false}},
-          {"name": "elu"},
-          {"name": "layer_norm"},
-
-          {"name": "noise_linear", "args": {"out_features": 19, "bias": true, "factorised": false}},
-          {"name": "sigmoid"}
+          {"name": "linear", "args": {
+            "out_features": 2,
+            "weight_init": "xavier_normal"
+          }},
+          {"name": "tanh"}
         ]
       ]}
     ],
     "critic": [
       {"name": "inputs", "modules": [
         [
-          {"name": "input", "in_features": 529},
+          {"name": "input_channeled", "in_channels": 3},
 
-          {"name": "linear", "args": {"out_features": 1024, "weight_init": "xavier_normal"}},
-          {"name": "elu"},
-          {"name": "layer_norm"},
+          {"name": "conv_2d", "args": {
+            "in_channels": 3,
+            "out_channels": 32,
+            "kernel_size": 8,
+            "stride": 2,
+            "padding": 0,
+            "weight_init": "xavier_normal"
+          }},
+          {"name": "leaky_relu"},
+          {"name": "batch_norm_2d"},
 
-          {"name": "linear", "args": {"out_features": 1024, "weight_init": "xavier_normal"}},
-          {"name": "elu"},
-          {"name": "layer_norm"}
+          {"name": "conv_2d", "args": {
+            "in_channels": 32,
+            "out_channels": 32,
+            "kernel_size": 4,
+            "stride": 2,
+            "padding": 0,
+            "weight_init": "xavier_normal"
+          }},
+          {"name": "leaky_relu"},
+          {"name": "batch_norm_2d"},
+
+          {"name": "conv_2d", "args": {
+            "in_channels": 32,
+            "out_channels": 32,
+            "kernel_size": 4,
+            "stride": 2,
+            "padding": 0,
+            "weight_init": "xavier_normal"
+          }},
+          {"name": "leaky_relu"},
+          {"name": "batch_norm_2d"},
+
+          {"name": "conv_2d", "args": {
+            "in_channels": 32,
+            "out_channels": 32,
+            "kernel_size": 4,
+            "stride": 1,
+            "padding": 0,
+            "weight_init": "xavier_normal"
+          }},
+          {"name": "leaky_relu"},
+          {"name": "batch_norm_2d"},
+
+          {"name": "flatten"},
+
+          {"name": "dropout", "args": {"p": 0.5}},
+
+          {"name": "linear", "args": {
+            "out_features": 256,
+            "weight_init": "xavier_normal"
+          }},
+          {"name": "leaky_relu"}
+        ],
+        [
+          {"name": "input", "in_features": 2}
         ]
       ]},
       {"name": "outputs", "modules": [
         [
-          {"name": "input", "in_features": 1024},
+          {"name": "input", "in_features": 258},
 
-          {"name": "linear", "args": {"out_features": 1024, "weight_init": "xavier_normal"}},
-          {"name": "elu"},
-          {"name": "layer_norm"},
+          {"name": "linear", "args": {
+            "out_features": 128,
+            "weight_init": "xavier_normal"
+          }},
+          {"name": "leaky_relu"},
 
-          {"name": "linear", "args": {"out_features": 1024, "weight_init": "xavier_normal"}},
-          {"name": "elu"},
-          {"name": "layer_norm"},
-
-          {"name": "linear", "args": {"out_features": 1, "weight_init": "xavier_uniform"}}
+          {"name": "linear", "args": {
+            "out_features": 1,
+            "weight_init": "xavier_normal"
+          }}
         ]
       ]}
     ]

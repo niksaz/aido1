@@ -13,27 +13,6 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Paper: https://arxiv.org/abs/1509.02971
 
 
-class ActorDense(nn.Module):
-    def __init__(self, state_dim, action_dim, max_action):
-        super(ActorDense, self).__init__()
-
-        state_dim = functools.reduce(operator.mul, state_dim, 1)
-
-        self.l1 = nn.Linear(state_dim, 400)
-        self.l2 = nn.Linear(400, 300)
-        self.l3 = nn.Linear(300, action_dim)
-
-        self.max_action = max_action
-
-        self.tanh = nn.Tanh()
-
-    def forward(self, x):
-        x = F.relu(self.l1(x))
-        x = F.relu(self.l2(x))
-        x = self.max_action * self.tanh(self.l3(x))
-        return x
-
-
 class ActorCNN(nn.Module):
     def __init__(self, action_dim, max_action):
         super(ActorCNN, self).__init__()
@@ -80,23 +59,6 @@ class ActorCNN(nn.Module):
         x[:, 0] = self.max_action * self.sigm(x[:, 0])  # because we don't want the duckie to go backwards
         x[:, 1] = self.tanh(x[:, 1])
 
-        return x
-
-
-class CriticDense(nn.Module):
-    def __init__(self, state_dim, action_dim):
-        super(CriticDense, self).__init__()
-
-        state_dim = functools.reduce(operator.mul, state_dim, 1)
-
-        self.l1 = nn.Linear(state_dim, 400)
-        self.l2 = nn.Linear(400 + action_dim, 300)
-        self.l3 = nn.Linear(300, 1)
-
-    def forward(self, x, u):
-        x = F.relu(self.l1(x))
-        x = F.relu(self.l2(torch.cat([x, u], 1)))
-        x = self.l3(x)
         return x
 
 

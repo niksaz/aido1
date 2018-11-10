@@ -162,7 +162,6 @@ class EnvironmentWrapper(BaseEnvironment):
 
         self.repeat_actions = self.wrapper_config['repeat_actions']
         self.reward_scale = self.wrapper_config['reward_scale']
-        self.fail_reward = self.wrapper_config['fail_reward']
 
         self.change_model(**self.internal_env_config)
 

@@ -195,7 +195,7 @@ class EnvironmentWrapper(BaseEnvironment):
         self.rf_rewarder.reset(observation)
         self.observation_transformed = self.transformer.transform(observation)
 
-        return self.observation_transformed, observation['body_pos']
+        return self.observation_transformed
 
     def collect_garbage(self):
         self.env.collect_garbage()

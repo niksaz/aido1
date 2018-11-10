@@ -52,15 +52,14 @@ class Transformer:
 
     def transform(self, observation):
         transformed = self._transform(observation)
-        self.previous_observations.append(transformed)
-        while len(self.previous_observations) > self.repeat_observations:
-            self.previous_observations.pop()
-        return np.concatenate(tuple(self.previous_observations[0:2]), axis=0)
+        observs = self.previous_observations
+        observs.append(transformed)
+        while len(observs) > self.repeat_observations:
+            observs.pop()
+        return np.concatenate(observs, axis=0)
 
     def _transform(self, observation):
         resized = imresize(observation, self.shape)
-        grayed = color.rgb2gray(resized).reshape(self.shape[:2])
-        return grayed.transpose(2, 0, 1)
-
-
+        gray = color.rgb2gray(resized).reshape(self.shape[:2])
+        return np.expand_dims(gray, axis=0)  # First dimension represents layers in torch
 

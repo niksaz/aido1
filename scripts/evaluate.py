@@ -59,7 +59,7 @@ def evaluate(config, directory, directories, seed_plus):
     reward_sum = 0.0
     reward_modified_sum = 0.0
 
-    observation = env.reset(project=False)
+    observation = env.reset()
 
     replays_list = []
 

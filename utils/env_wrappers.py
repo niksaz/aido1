@@ -20,11 +20,11 @@ def create_env(config, internal_env_args, transfer):
 
 class BaseEnvironment(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def step(self, action, project):
+    def step(self, action):
         pass
 
     @abc.abstractmethod
-    def reset(self, project):
+    def reset(self):
         pass
 
     @abc.abstractmethod
@@ -67,9 +67,9 @@ class VirtualEnvironment(BaseEnvironment):
             flag = False
         return res
 
-    def step(self, action, project):
+    def step(self, action):
         action = action.tolist()
-        json_data = json.dumps({'action': action, 'project': project})
+        json_data = json.dumps({'action': action})
         res = self._make_request('http://{host}:{port}/post_step_request/'.format(host=self.host_tcp,
                                                                                   port=self.port_tcp), json_data)
 
@@ -79,10 +79,9 @@ class VirtualEnvironment(BaseEnvironment):
     def get_observation(self):
         return self.observation
 
-    def reset(self, project):
-        json_data = json.dumps({'project': project})
+    def reset(self):
         res = self._make_request('http://{host}:{port}/post_reset_request/'.format(host=self.host_tcp,
-                                                                                   port=self.port_tcp), json_data)
+                                                                                   port=self.port_tcp))
 
         self.observation = res['observation']
         return res['observation']
@@ -108,13 +107,13 @@ class DuckietownEnvironmentWrapper(BaseEnvironment):
         self.observation = None
         self.seed = None
 
-    def step(self, action, project):
-        result = self.env.step(action, project)
+    def step(self, action):
+        result = self.env.step(action)
         self.observation = result[0]
         return result
 
-    def reset(self, project):
-        self.observation = self.env.reset(project)
+    def reset(self):
+        self.observation = self.env.reset()
         return self.observation
 
     def get_observation(self):
@@ -146,7 +145,7 @@ class EnvironmentWrapper(BaseEnvironment):
         self._create_env_from_type(self.internal_env_init_args, self.internal_env_type)
         self.env.change_model(**self.internal_env_config)
 
-        observation = self.env.reset(project=False)
+        observation = self.env.reset()
         if observation == 'restart':
             raise ValueError('resetting timeout')
 
@@ -176,8 +175,8 @@ class EnvironmentWrapper(BaseEnvironment):
         self.observation_transformed = self.transformer.transform(observation)
         self.submit_first_observation = self.transformer.transform(observation)
 
-    def reset(self, project):
-        observation = self.env.reset(project)
+    def reset(self):
+        observation = self.env.reset()
 
         if observation is None:
             return observation
@@ -207,7 +206,7 @@ class EnvironmentWrapper(BaseEnvironment):
             self.env.change_model(seed)
             self.seed = seed
 
-    def step(self, action, project=False):
+    def step(self, action):
         if self.config['model']['actor'][-1]['modules'][-1][-1]['name'] == 'tanh':
             action /= 2
             action += 0.5
@@ -219,7 +218,7 @@ class EnvironmentWrapper(BaseEnvironment):
             action = cut_off_leg(action)
 
         for _ in range(self.repeat_actions):
-            observation, reward, done, _ = self.env.step(action, project=project)
+            observation, reward, done, _ = self.env.step(action)
 
             if observation == 'restart':
                 raise ValueError('stepping timeout')

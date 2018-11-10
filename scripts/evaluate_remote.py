@@ -51,7 +51,7 @@ def evaluate_single_thread(p_id, model, config, seeds_per_thread, output: Queue)
         internal_env_args['env_config']['seed'] = explorer_seed
 
         env = create_env(config, internal_env_args, transfer=config['training']['transfer'])
-        observation = env.reset(project=False)
+        observation = env.reset()
 
         done = False
         steps = 0

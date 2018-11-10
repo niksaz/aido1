@@ -163,7 +163,7 @@ class SingleThreadExplorer(Explorer):
 
     def _explore_episode(self, action_random_process, epsilon, episode_metrics, training_config):
         episode_timings = {'reset': time.time()}
-        observation = self.environment.reset(project=False)
+        observation = self.environment.reset()
         episode_timings['reset'] = time.time() - episode_timings['reset']
 
         done = False

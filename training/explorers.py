@@ -177,7 +177,7 @@ class SingleThreadExplorer(Explorer):
         while not done:
             sampled_action_noise = action_random_process.sample()
 
-            observation_transformed, _ = observation
+            observation_transformed = observation
             
             model_start = time.time()
             if self.exploration_type == 'exploiting' or self.exploration_type == 'exploiting_virtual':

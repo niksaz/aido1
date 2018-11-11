@@ -236,7 +236,7 @@ class EnvironmentWrapper(BaseEnvironment):
 
             self.env_step += 1
 
-            done = done or self.env_step > self.env.max_env_steps
+            done = done or self.env_step > self.max_env_steps
 
             if done:
                 break

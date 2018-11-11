@@ -86,12 +86,8 @@ class VirtualEnvironment(BaseEnvironment):
         self.observation = res['observation']
         return res['observation']
 
-    def change_model(self, model, prosthetic, difficulty, seed, max_steps=None):
-        if max_steps is None:
-            json_data = json.dumps({'model': model, 'prosthetic': prosthetic, 'difficulty': difficulty, 'seed': seed})
-        else:
-            json_data = json.dumps({'model': model, 'prosthetic': prosthetic, 'difficulty': difficulty, 'seed': seed,
-                                    'max_steps': max_steps})
+    def change_model(self, seed):
+        json_data = json.dumps({'seed': seed})
         res = self._make_request('http://{host}:{port}/post_change_model_request/'.format(host=self.host_tcp,
                                                                                           port=self.port_tcp),
                                  json_data)

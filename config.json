@@ -240,7 +240,7 @@
     "explore_after": 0,
 
     "server": {
-      "host_tcp": "52.30.166.205",
+      "host_tcp": "10.100.1.186",
       "port_tcp_start": 18200
     },
 

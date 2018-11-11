@@ -4,6 +4,7 @@
     "env_accuracy": 1e-3,
     "rotate_coors": true,
     "wrapper": {
+      "max_env_steps": 1000,
       "repeat_actions": 3,
       "reward_scale": 1.0,
       "reward_functions": {
@@ -186,7 +187,7 @@
     "num_threads_exploiting": 1,
     "num_threads_exploiting_virtual": 0,
     "every_second_random": true,
-    "max_episodes": 1200,
+    "max_episodes": 24000,
     "max_update_steps": 16000000,
     "update_steps_between_update": 10000,
     "critic_loss": "mse_loss",
@@ -223,7 +224,7 @@
     "train_steps": 8000,
     "train_delay": 240,
     "saving_reward_tolerance": 1,
-    "save_every_episode": 5,
+    "save_every_episode": 50,
     "mirroring": false,
     "reward_modified": true,
     "tau": 0.0001,

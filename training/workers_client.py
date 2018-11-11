@@ -3,7 +3,6 @@ import time
 
 import numpy as np
 
-from models.ddpg.model import get_total_indices, find_index
 from utils.buffers import create_buffer
 from utils.util import set_seeds
 
@@ -23,12 +22,18 @@ def client_sampling_worker(config, p_id, global_update_step, sample_queues, epis
     counter = 0
 
     while True:
+        taken_replays = 0
         while True:
+            if taken_replays > 128:
+                print("Episode queue is too big!")
+                episode_queue.clear()
+                break
             try:
                 replays = episode_queue.get_nowait()
                 for (observation, action, reward, next_observation, done) in replays:
                     buffer.add(observation, action, reward, next_observation, done)
                 received_examples += len(replays)
+                taken_replays += 1
             except py_queue.Empty:
                 break
 

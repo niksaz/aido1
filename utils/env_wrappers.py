@@ -160,6 +160,7 @@ class EnvironmentWrapper(BaseEnvironment):
 
         self.wrapper_config = self.env_config['wrapper']
 
+        self.max_env_steps = self.wrapper_config['max_env_steps']
         self.repeat_actions = self.wrapper_config['repeat_actions']
         self.reward_scale = self.wrapper_config['reward_scale']
 
@@ -234,6 +235,8 @@ class EnvironmentWrapper(BaseEnvironment):
             total_reward_with_mod += modified_reward
 
             self.env_step += 1
+
+            done = done or self.env_step > self.env.max_env_steps
 
             if done:
                 break

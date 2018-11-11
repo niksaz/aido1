@@ -88,7 +88,7 @@ class TrainManager(BaseManager):
 
         self.processes = []
 
-        self.episode_queues = [torch_mp.Queue() for _ in range(self.training_config['num_threads_sampling'])]
+        self.episode_queues = [torch_mp.Queue(maxsize=128) for _ in range(self.training_config['num_threads_sampling'])]
 
         self.sample_queues = [torch_mp.Queue(maxsize=self.training_config['sampling_queue_max_len']) for _ in
                   range(self.training_config['num_threads_training'])]

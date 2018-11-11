@@ -1,6 +1,3 @@
-from utils.env_wrappers import ProstheticEnvironmentProxyWrapper
-from utils.env_wrappers import ProstheticEnvironmentWrapper
-from osim.env import ProstheticsEnv
 import json
 import argparse
 from wsgiref.simple_server import make_server
@@ -19,7 +16,7 @@ from pyramid.response import Response
 #     del obs_copy['body_acc_rot']
 #     del obs_copy['muscles']
 #     return obs_copy
-
+from utils.env_wrappers import DuckietownEnvironmentWrapper
 
 env = None
 
@@ -57,10 +54,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Running server')
     parser.add_argument('--host', type=str, default='localhost', help='')
     parser.add_argument('--port', type=int, default=18000, help='')
-    parser.add_argument('--accuracy', type=str, default='1e-3', help='')
     arguments = parser.parse_args()
 
-    env = ProstheticEnvironmentProxyWrapper(visualize=False, integrator_accuracy=float(arguments.accuracy))
+    env = DuckietownEnvironmentWrapper()
 
     with Configurator() as config:
         config.add_route('post_step_request', '/post_step_request/')

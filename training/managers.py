@@ -295,7 +295,6 @@ class VirtualManager(BaseManager):
     def _run_server_workers(self):
         host = self.training_config['server']['host_tcp']
         port_start = self.training_config['server']['port_tcp_start']
-        env_accuracy = self.config['environment']['env_accuracy']
 
         sys.path.append(os.getcwd())
 
@@ -303,6 +302,5 @@ class VirtualManager(BaseManager):
                                   self.training_config['num_threads_exploiting_virtual']):
             process = subprocess.Popen(['python', 'pyramid_worker.py',
                                         '--host', host,
-                                        '--port', str(port_start + p_id),
-                                        '--accuracy', str(env_accuracy)])
+                                        '--port', str(port_start + p_id)])
             self.processes.append(process)

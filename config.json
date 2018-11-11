@@ -4,7 +4,7 @@
     "env_accuracy": 1e-3,
     "rotate_coors": true,
     "wrapper": {
-      "max_env_steps": 1000,
+      "max_env_steps": 2000,
       "repeat_actions": 3,
       "reward_scale": 1.0,
       "reward_functions": {
@@ -181,11 +181,11 @@
     "num_threads_sampling": 1,
     "multimodel_parallelism_enabled": true,
     "sampling_queue_max_len": 32,
-    "num_threads_model_workers": 0,
-    "num_threads_exploring": 1,
-    "num_threads_exploring_virtual": 0,
-    "num_threads_exploiting": 1,
-    "num_threads_exploiting_virtual": 0,
+    "num_threads_model_workers": 1,
+    "num_threads_exploring": 0,
+    "num_threads_exploring_virtual": 7,
+    "num_threads_exploiting": 0,
+    "num_threads_exploiting_virtual": 1,
     "every_second_random": true,
     "max_episodes": 24000,
     "max_update_steps": 16000000,
@@ -242,12 +242,12 @@
     "explore_after": 0,
 
     "server": {
-      "host_tcp": "52.49.12.154",
+      "host_tcp": "52.30.166.205",
       "port_tcp_start": 18200
     },
 
     "client": {
-      "host_tcp": "52.49.12.154",
+      "host_tcp": "52.30.166.205",
       "port_tcp_start": 18200
     }
 

@@ -1,8 +1,6 @@
 {
   "environment": {
     "core": {},
-    "env_accuracy": 1e-3,
-    "rotate_coors": true,
     "wrapper": {
       "max_env_steps": 2000,
       "repeat_actions": 3,

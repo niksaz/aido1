@@ -30,6 +30,7 @@ def post_step_request(request):
 
 
 def post_reset_request(request):
+    print(request.json_body)
     json_data = json.loads(request.json_body)
     observation = env.reset(**json_data)
     # observation = compress_observation(observation)

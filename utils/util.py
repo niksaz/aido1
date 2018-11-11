@@ -121,6 +121,16 @@ def save_info(filename, info):
         json.dump(info, f)
 
 
+def from_numpy(data):
+    if isinstance(data, np.ndarray):
+        return [from_numpy(x) for x in data]
+    if isinstance(data, np.inexact):
+        return float(data)
+    if isinstance(data, np.integer):
+        return int(data)
+    return data
+
+
 def deserialize(data):
     deserialized = bytes(data, 'utf-8')
     deserialized = gzip.decompress(deserialized)

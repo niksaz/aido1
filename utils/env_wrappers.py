@@ -8,7 +8,7 @@ from requests.exceptions import RequestException
 
 from duckietown_rl.env import launch_env
 from utils.reward_shaping.env_utils import Rewarder, Transformer
-from utils.util import cut_off_leg
+from utils.util import cut_off_leg, from_numpy
 
 MAX_ITER = 1000
 
@@ -104,12 +104,12 @@ class DuckietownEnvironmentWrapper(BaseEnvironment):
         self.seed = None
 
     def step(self, action):
-        result = self.env.step(action)
+        result = [from_numpy(data) for data in self.env.step(action)]
         self.observation = result[0]
         return result
 
     def reset(self):
-        self.observation = self.env.reset()
+        self.observation = from_numpy(self.env.reset())
         return self.observation
 
     def get_observation(self):

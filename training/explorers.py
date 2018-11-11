@@ -206,7 +206,7 @@ class SingleThreadExplorer(Explorer):
             if training_config['reward_modified']:
                 reward = reward_modified
 
-            replay.append((observation[0], action, reward, next_observation[0], done))
+            replay.append((observation, action, reward, next_observation, done))
 
             observation = next_observation
             

@@ -105,7 +105,7 @@ class DuckietownEnvironmentWrapper(BaseEnvironment):
         self.preliminary_transformer = PreliminaryTransformer()
 
     def step(self, action):
-        result = self.env.step(action)
+        result = list(self.env.step(action))
         result[0] = self.preliminary_transformer.transform(result[0])
         result = [from_numpy(data) for data in result]
         self.observation = result[0]

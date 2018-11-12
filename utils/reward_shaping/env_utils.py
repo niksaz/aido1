@@ -38,6 +38,19 @@ class Rewarder:
         return current_reward
 
 
+class PreliminaryTransformer:
+        def __init__(self, shape=(120, 160, 3)):
+            self.shape = shape
+
+        def reset(self, observation):
+            pass
+
+        def transform(self, observation):
+            resized = imresize(observation, self.shape)
+            gray = color.rgb2gray(resized).reshape(self.shape[:2])
+            return np.expand_dims(gray, axis=0)  # First dimension represents layers in torch
+
+
 class Transformer:
     def __init__(self, repeat_obsservations=3, shape=(120, 160, 3)):
         self.repeat_observations = max(repeat_obsservations, 1)
@@ -45,21 +58,13 @@ class Transformer:
         self.previous_observations = deque(maxlen=self.repeat_observations)
 
     def reset(self, observation):
-        transformed = self._transform(observation)
         self.previous_observations.clear()
         for _ in range(self.repeat_observations):
-            self.previous_observations.append(transformed)
+            self.previous_observations.append(observation)
 
     def transform(self, observation):
-        transformed = self._transform(observation)
         observs = self.previous_observations
-        observs.append(transformed)
+        observs.append(observation)
         while len(observs) > self.repeat_observations:
             observs.pop()
         return np.concatenate(observs, axis=0)
-
-    def _transform(self, observation):
-        resized = imresize(observation, self.shape)
-        gray = color.rgb2gray(resized).reshape(self.shape[:2])
-        return np.expand_dims(gray, axis=0)  # First dimension represents layers in torch
-

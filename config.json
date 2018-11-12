@@ -196,7 +196,7 @@
     "replays_dir": "/mnt/junkyard/data/prosthetics/replays",
     "grad_norm": 1000.0,
     "grad_clip": 1.0,
-    "buffer_size": 800000,
+    "buffer_size": 10000,
     "optimizer": "adam",
     "actor_train_decay": {
       "lr": {
@@ -218,7 +218,7 @@
         }
       }
     },
-    "batch_size": 256,
+    "batch_size": 64,
     "train_steps": 8000,
     "train_delay": 240,
     "saving_reward_tolerance": 1,

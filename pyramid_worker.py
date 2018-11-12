@@ -19,11 +19,14 @@ from pyramid.response import Response
 from utils.env_wrappers import DuckietownEnvironmentWrapper
 
 env = None
+port = None
 
 
 def post_step_request(request):
     json_data = json.loads(request.json_body)
+    print("{}: Action received".format(port))
     observation, reward, done, info = env.step(**json_data)
+    print("{}: Observation created".format(port))
     # observation = compress_observation(observation)
     result = {'observation': observation, 'reward': reward, 'done': done, 'info': info}
     return Response(json=result)
@@ -31,6 +34,7 @@ def post_step_request(request):
 
 def post_reset_request(request):
     observation = env.reset()
+    print("{}: Env reseted".format(port))
     # observation = compress_observation(observation)
     result = {'observation': observation}
     return Response(json=result)
@@ -72,5 +76,6 @@ if __name__ == '__main__':
 
         app = config.make_wsgi_app()
 
+    port = arguments.port
     server = make_server(arguments.host, arguments.port, app)
     server.serve_forever()

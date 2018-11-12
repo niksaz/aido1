@@ -64,10 +64,13 @@ def client_model_worker(model, observation_queue, action_queue):
     actions = []
 
     while True:
+        indexes = []
         observations = observation_queue.get()
         for (index, observation, noise) in observations:
             action = model.act(observation, noise)
+            indexes.append(index)
             actions.append((index, action))
+        print("Model acts for {}".format(indexes))
         action_queue.put(actions)
         actions = []
 
@@ -85,6 +88,7 @@ def client_observation_worker(observation_pipes, observation_queue):
         if len(observations) == 0:
             continue
 
+        print("Deliver observations to model worker")
         observation_queue.put(observations)
 
 
@@ -92,5 +96,7 @@ def client_action_worker(action_pipes, action_queue):
     while True:
         actions = action_queue.get()
 
+        print("Sending actions to peers")
         for index, action in actions:
             action_pipes[index].send(action)
+

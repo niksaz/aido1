@@ -68,11 +68,12 @@ class VirtualEnvironment(BaseEnvironment):
         return res
 
     def step(self, action):
+        print("{}: sending action".format(self.port_tcp))
         action = action.tolist()
         json_data = json.dumps({'action': action})
         res = self._make_request('http://{host}:{port}/post_step_request/'.format(host=self.host_tcp,
                                                                                   port=self.port_tcp), json_data)
-
+        print("{}: observation received".format(self.port_tcp))
         self.observation = res['observation']
         return res['observation'], res['reward'], res['done'], res['info']
 
@@ -80,9 +81,11 @@ class VirtualEnvironment(BaseEnvironment):
         return self.observation
 
     def reset(self):
+        print("{}: reseting env".format(self.port_tcp))
         res = self._make_request('http://{host}:{port}/post_reset_request/'.format(host=self.host_tcp,
                                                                                    port=self.port_tcp))
 
+        print("{}: env reseted".format(self.port_tcp))
         self.observation = res['observation']
         return res['observation']
 

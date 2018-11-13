@@ -20,6 +20,8 @@ def get_module(config):
         return nn.Dropout(**config['args'])
     if config['name'] == 'leaky_relu':
         return nn.LeakyReLU()
+    if config['name'] == 'elu':
+        return nn.ELU()
     if config['name'] == 'tanh':
         return nn.Tanh()
     raise AssertionError('Unknown module named ' + config['name'])

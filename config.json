@@ -30,10 +30,6 @@
             "padding": 0,
             "weight_init": "xavier_normal"
           }},
-          {"name": "max_pooling_2d", "args": {
-            "stride": 2,
-            "kernel_size": 3
-          }},
           {"name": "leaky_relu"},
           {"name": "batch_norm_2d"},
 
@@ -45,10 +41,6 @@
             "padding": 0,
             "weight_init": "xavier_normal"
           }},
-          {"name": "max_pooling_2d", "args": {
-            "stride": 2,
-            "kernel_size": 3
-          }},
           {"name": "leaky_relu"},
           {"name": "batch_norm_2d"},
 
@@ -59,10 +51,6 @@
             "stride": 2,
             "padding": 0,
             "weight_init": "xavier_normal"
-          }},
-          {"name": "max_pooling_2d", "args": {
-            "stride": 2,
-            "kernel_size": 3
           }},
           {"name": "leaky_relu"},
           {"name": "batch_norm_2d"},
@@ -74,10 +62,6 @@
             "stride": 1,
             "padding": 0,
             "weight_init": "xavier_normal"
-          }},
-          {"name": "max_pooling_2d", "args": {
-            "stride": 2,
-            "kernel_size": 3
           }},
           {"name": "leaky_relu"},
           {"name": "batch_norm_2d"},
@@ -122,9 +106,16 @@
             "padding": 0,
             "weight_init": "xavier_normal"
           }},
-          {"name": "max_pooling_2d", "args": {
+          {"name": "leaky_relu"},
+          {"name": "batch_norm_2d"},
+
+          {"name": "conv_2d", "args": {
+            "in_channels": 32,
+            "out_channels": 32,
+            "kernel_size": 5,
             "stride": 2,
-            "kernel_size": 3
+            "padding": 0,
+            "weight_init": "xavier_normal"
           }},
           {"name": "leaky_relu"},
           {"name": "batch_norm_2d"},
@@ -137,25 +128,7 @@
             "padding": 0,
             "weight_init": "xavier_normal"
           }},
-          {"name": "max_pooling_2d", "args": {
-            "stride": 2,
-            "kernel_size": 3
-          }},
-          {"name": "leaky_relu"},
-          {"name": "batch_norm_2d"},
 
-          {"name": "conv_2d", "args": {
-            "in_channels": 32,
-            "out_channels": 32,
-            "kernel_size": 5,
-            "stride": 2,
-            "padding": 0,
-            "weight_init": "xavier_normal"
-          }},
-          {"name": "max_pooling_2d", "args": {
-            "stride": 2,
-            "kernel_size": 3
-          }},
           {"name": "leaky_relu"},
           {"name": "batch_norm_2d"},
 
@@ -166,10 +139,6 @@
             "stride": 1,
             "padding": 0,
             "weight_init": "xavier_normal"
-          }},
-          {"name": "max_pooling_2d", "args": {
-            "stride": 2,
-            "kernel_size": 3
           }},
           {"name": "leaky_relu"},
           {"name": "batch_norm_2d"},

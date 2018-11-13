@@ -186,12 +186,13 @@ class SingleThreadExplorer(Explorer):
                 )
             elif self.config['training']['every_second_random'] and self.p_id % 2 == 0 \
                     and random.uniform(0.0, 1.0) < self.config['training']['epsilon_ratio'] * epsilon:
-                action = np.random.random(self.config['model']['num_action']).astype(dtype=np.float32)
+                action = np.random.random(self.config['model']['num_action']).astype(dtype=np.float32)*2 - 1.0
             else:
                 action = self.model.act(
                     observation_transformed,
                     noise=epsilon * sampled_action_noise
                 )
+            action = np.clip(action, -1, 1)
             episode_timings['model'] += (time.time() - model_start)
 
             env_start = time.time()

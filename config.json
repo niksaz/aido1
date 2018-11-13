@@ -77,21 +77,21 @@
           {"name": "leaky_relu"},
           {"name": "batch_norm_2d"},
 
-          {"name": "flatten", "args": {"out_features": 256}}
+          {"name": "flatten", "args": {"out_features": 768}}
         ]
       ]},
       {"name": "outputs", "modules": [
         [
-          {"name": "input", "in_features": 256},
+          {"name": "input", "in_features": 768},
 
           {"name": "linear", "args": {
-            "out_features": 128,
+            "out_features": 192,
             "weight_init": "xavier_normal"
           }},
           {"name": "elu"},
 
           {"name": "linear", "args": {
-            "out_features": 64,
+            "out_features": 48,
             "weight_init": "xavier_normal"
           }},
           {"name": "elu"},
@@ -164,7 +164,7 @@
           {"name": "leaky_relu"},
           {"name": "batch_norm_2d"},
 
-          {"name": "flatten", "args": {"out_features": 256}}
+          {"name": "flatten", "args": {"out_features": 768}}
         ],
         [
           {"name": "input", "in_features": 2}
@@ -172,16 +172,16 @@
       ]},
       {"name": "outputs", "modules": [
         [
-          {"name": "input", "in_features": 258},
+          {"name": "input", "in_features": 770},
 
           {"name": "linear", "args": {
-            "out_features": 128,
+            "out_features": 192,
             "weight_init": "xavier_normal"
           }},
           {"name": "elu"},
 
           {"name": "linear", "args": {
-            "out_features": 64,
+            "out_features": 48,
             "weight_init": "xavier_normal"
           }},
           {"name": "elu"},

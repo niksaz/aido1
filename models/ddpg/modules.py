@@ -12,6 +12,8 @@ def get_module(config):
         return Flatten()
     if config['name'] == 'conv_2d':
         return Conv2dWrapper(**config['args'])
+    if config['name'] == 'max_pooling_2d':
+        return nn.MaxPool2d(**config['args'])
     if config['name'] == 'batch_norm_2d':
         return nn.BatchNorm2d(**config['args'])
     if config['name'] == 'dropout':

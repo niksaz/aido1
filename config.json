@@ -66,13 +66,18 @@
           {"name": "leaky_relu"},
           {"name": "batch_norm_2d"},
 
-          {"name": "flatten", "args": {"out_features": 2688}},
-
-          {"name": "linear", "args": {
-            "out_features": 256,
+          {"name": "conv_2d", "args": {
+            "in_channels": 32,
+            "out_channels": 32,
+            "kernel_size": 5,
+            "stride": 1,
+            "padding": 0,
             "weight_init": "xavier_normal"
           }},
-          {"name": "leaky_relu"}
+          {"name": "leaky_relu"},
+          {"name": "batch_norm_2d"},
+
+          {"name": "flatten", "args": {"out_features": 256}}
         ]
       ]},
       {"name": "outputs", "modules": [
@@ -80,7 +85,13 @@
           {"name": "input", "in_features": 256},
 
           {"name": "linear", "args": {
-            "out_features": 256,
+            "out_features": 128,
+            "weight_init": "xavier_normal"
+          }},
+          {"name": "elu"},
+
+          {"name": "linear", "args": {
+            "out_features": 64,
             "weight_init": "xavier_normal"
           }},
           {"name": "elu"},
@@ -128,7 +139,6 @@
             "padding": 0,
             "weight_init": "xavier_normal"
           }},
-
           {"name": "leaky_relu"},
           {"name": "batch_norm_2d"},
 
@@ -143,13 +153,18 @@
           {"name": "leaky_relu"},
           {"name": "batch_norm_2d"},
 
-          {"name": "flatten", "args": {"out_features": 2688}},
-
-          {"name": "linear", "args": {
-            "out_features": 256,
+          {"name": "conv_2d", "args": {
+            "in_channels": 32,
+            "out_channels": 32,
+            "kernel_size": 5,
+            "stride": 1,
+            "padding": 0,
             "weight_init": "xavier_normal"
           }},
-          {"name": "leaky_relu"}
+          {"name": "leaky_relu"},
+          {"name": "batch_norm_2d"},
+
+          {"name": "flatten", "args": {"out_features": 256}}
         ],
         [
           {"name": "input", "in_features": 2}
@@ -160,21 +175,22 @@
           {"name": "input", "in_features": 258},
 
           {"name": "linear", "args": {
-            "out_features": 256,
+            "out_features": 128,
             "weight_init": "xavier_normal"
           }},
           {"name": "elu"},
 
           {"name": "linear", "args": {
-            "out_features": 256,
+            "out_features": 64,
             "weight_init": "xavier_normal"
           }},
           {"name": "elu"},
 
           {"name": "linear", "args": {
-            "out_features": 1,
+            "out_features": 2,
             "weight_init": "xavier_normal"
-          }}
+          }},
+          {"name": "tanh"}
         ]
       ]}
     ]
@@ -199,8 +215,8 @@
     "update_steps_between_update": 10000,
     "critic_loss": "mse_loss",
     "global_seed": 42,
-    "log_dir": "/data/sazanovich/duckietown/baseline/logs",
-    "save_dir": "/data/sazanovich/duckietown/baseline/saved_models",
+    "log_dir": "/data/sazanovich/duckietown/baseline3/logs",
+    "save_dir": "/data/sazanovich/duckietown/baseline3/saved_models",
     "saving_replays": false,
     "replays_dir": "/mnt/junkyard/data/prosthetics/replays",
     "grad_norm": 1000.0,

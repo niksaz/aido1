@@ -7,7 +7,8 @@ import requests
 from requests.exceptions import RequestException
 
 from duckietown_rl.env import launch_env
-from utils.reward_shaping.env_utils import Rewarder, Transformer, PreliminaryTransformer
+from utils.reward_shaping.env_utils import Rewarder, Transformer, \
+    PreliminaryTransformer, ActionTransformer
 from utils.util import cut_off_leg, from_numpy
 
 MAX_ITER = 1000
@@ -96,8 +97,7 @@ class VirtualEnvironment(BaseEnvironment):
                                  json_data)
 
     def collect_garbage(self):
-        res = self._make_request('http://{host}:{port}/post_collect_garbage_request/'.format(host=self.host_tcp,
-                                                                                             port=self.port_tcp))
+        res = self._make_request('http://{host}:{port}/post_collect_garbage_request/'.format(host=self.host_tcp,                                                                              port=self.port_tcp))
 
 
 class DuckietownEnvironmentWrapper(BaseEnvironment):
@@ -106,8 +106,10 @@ class DuckietownEnvironmentWrapper(BaseEnvironment):
         self.observation = None
         self.seed = None
         self.preliminary_transformer = PreliminaryTransformer()
+        self.action_transformer = ActionTransformer()
 
     def step(self, action):
+        action = self.action_transformer.transform(action)
         result = list(self.env.step(action))
         result[0] = self.preliminary_transformer.transform(result[0])
         result = [from_numpy(data) for data in result]

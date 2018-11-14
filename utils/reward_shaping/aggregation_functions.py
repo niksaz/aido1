@@ -23,10 +23,8 @@ class BaselineAggregationFunction(RewardAggregationFunction):
         pass
 
     def __call__(self, previous_observation: dict, current_observation: dict, current_reward):
-        if current_reward == -1000:
-            current_reward = -10
-        elif current_reward > 0:
-            current_reward += 10
-        else:
-            current_reward += 4
+        if current_reward > 1:
+            return 1
+        if current_reward < -1:
+            return -1
         return current_reward

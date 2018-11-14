@@ -187,10 +187,9 @@
           {"name": "elu"},
 
           {"name": "linear", "args": {
-            "out_features": 2,
+            "out_features": 1,
             "weight_init": "xavier_normal"
-          }},
-          {"name": "tanh"}
+          }}
         ]
       ]}
     ]

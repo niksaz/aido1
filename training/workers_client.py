@@ -47,17 +47,13 @@ def client_sampling_worker(config, p_id, global_update_step, sample_queues, epis
             train_data = buffer.sample(batch_size=training_config['batch_size'])
             train_data_list.append(train_data)
 
-        if counter % 10000 == 0:
-            for sample_queue in sample_queues:
-                print('sampling queue size: ', sample_queue.qsize())
-            print()
-
         counter += 1
 
         buffer_size = len(buffer)
 
         for sample_queue, train_data in zip(sample_queues, train_data_list):
             sample_queue.put((train_data, received_examples, buffer_size))
+        print('Put samples')
 
 
 def client_model_worker(model, observation_queue, action_queue):

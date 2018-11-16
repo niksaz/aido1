@@ -107,6 +107,7 @@ class BaseTrainer:
                 time.sleep(training_config['train_delay'])
 
             update_step += 1
+            print('Trainer:train -> update step', update_step)
 
             self.logger.scalar_summary("buffer size", buffer_size, self.global_episode.value)
             self.logger.scalar_summary(

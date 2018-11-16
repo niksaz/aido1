@@ -204,18 +204,18 @@
     "multimodel_parallelism_enabled": true,
     "sampling_queue_max_len": 32,
     "num_threads_model_workers": 1,
-    "num_threads_exploring": 0,
-    "num_threads_exploring_virtual": 6,
-    "num_threads_exploiting": 0,
-    "num_threads_exploiting_virtual": 1,
+    "num_threads_exploring": 4,
+    "num_threads_exploring_virtual": 0,
+    "num_threads_exploiting": 1,
+    "num_threads_exploiting_virtual": 0,
     "every_second_random": true,
     "max_episodes": 24000,
     "max_update_steps": 16000000,
     "update_steps_between_update": 10000,
     "critic_loss": "mse_loss",
     "global_seed": 42,
-    "log_dir": "/data/sazanovich/duckietown/rewards-clipped/logs",
-    "save_dir": "/data/sazanovich/duckietown/rewards-clipped/saved_models",
+    "log_dir": "/data/sazanovich/duckietown/rewards2/logs",
+    "save_dir": "/data/sazanovich/duckietown/rewards2/saved_models",
     "saving_replays": false,
     "replays_dir": "/mnt/junkyard/data/prosthetics/replays",
     "grad_norm": 1000.0,
@@ -272,6 +272,5 @@
       "host_tcp": "34.245.119.73",
       "port_tcp_start": 18200
     }
-
   }
 }

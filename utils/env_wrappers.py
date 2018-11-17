@@ -213,15 +213,8 @@ class EnvironmentWrapper(BaseEnvironment):
             self.seed = seed
 
     def step(self, action):
-        if self.config['model']['actor'][-1]['modules'][-1][-1]['name'] == 'tanh':
-            action /= 2
-            action += 0.5
-
         total_reward = 0.0
         total_reward_with_mod = 0.0
-
-        if self.transfer:
-            action = cut_off_leg(action)
 
         for _ in range(self.repeat_actions):
             observation, reward, done, _ = self.env.step(action)

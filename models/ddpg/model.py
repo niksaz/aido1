@@ -148,8 +148,14 @@ class DDPG(RealModel):
         hard_update(self.actor, source_ddpg.actor)
 
     def load(self, directory):
-        self.actor.load_state_dict(torch.load('{}/actor_state_dict.pth'.format(directory)))
-        self.critic.load_state_dict(torch.load('{}/critic_state_dict.pth'.format(directory)))
+        self.actor.load_state_dict(
+            torch.load('{}/actor_state_dict.pth'.format(directory)))
+        self.critic.load_state_dict(
+            torch.load('{}/critic_state_dict.pth'.format(directory)))
+        # self.actor.load_state_dict(
+        #     torch.load('{}/actor_state_dict.pth'.format(directory), map_location=lambda storage, loc: storage))
+        # self.critic.load_state_dict(
+        #     torch.load('{}/critic_state_dict.pth'.format(directory), map_location=lambda storage, loc: storage))
 
 
 class RemoteModel:

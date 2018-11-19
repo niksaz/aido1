@@ -2,6 +2,7 @@ import abc
 import gc
 import json
 import time
+import numpy as np
 
 import requests
 from requests.exceptions import RequestException
@@ -112,6 +113,11 @@ class DuckietownEnvironmentWrapper(BaseEnvironment):
         # action = self.action_transformer.transform(action)
         result = list(self.env.step(action))
         result[0] = self.preliminary_transformer.transform(result[0])
+
+        lp = self.env.get_lane_pos(self.env.cur_pos, self.env.cur_angle)
+        reward = (0.2 - np.abs(lp.dist)) + 0.5 * self.env.speed
+
+        result[1] = reward
         result = [from_numpy(data) for data in result]
         self.observation = result[0]
         return result

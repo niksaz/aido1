@@ -1,5 +1,6 @@
 import copy
 
+from features.straight.straight import line_approx
 from utils.reward_shaping.additive_functions import *
 from utils.reward_shaping.aggregation_functions import *
 from collections import deque
@@ -39,16 +40,16 @@ class Rewarder:
 
 
 class PreliminaryTransformer:
-        def __init__(self, shape=(120, 160, 3)):
+        def __init__(self, shape=(120, 160)):
             self.shape = shape
 
         def reset(self, observation):
             pass
 
-        def transform(self, observation):
-            resized = imresize(observation, self.shape)
-            gray = color.rgb2gray(resized).reshape(self.shape[:2])
-            return np.expand_dims(gray, axis=0)  # First dimension represents layers in torch
+        def transform(self, obs):
+            white_yellow_obs = line_approx(np.array(obs, dtype=np.uint8))
+            resized = imresize(white_yellow_obs, self.shape)
+            return np.expand_dims(resized, axis=0)  # First dimension represents layers in torch
 
 
 class Transformer:

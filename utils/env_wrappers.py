@@ -115,7 +115,8 @@ class DuckietownEnvironmentWrapper(BaseEnvironment):
         result[0] = self.preliminary_transformer.transform(result[0])
 
         lp = self.env.get_lane_pos(self.env.cur_pos, self.env.cur_angle)
-        reward = (0.2 - np.abs(lp.dist)) + 0.5 * self.env.speed
+        reward = (0.2 - np.abs(lp.dist)) + 0.4 * self.env.speed * max(0.15 - np.abs(lp.dist), 0) / 0.15
+        reward /= 0.4
 
         result[1] = reward
         result = [from_numpy(data) for data in result]

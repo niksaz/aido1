@@ -106,6 +106,7 @@ class DuckietownEnvironmentWrapper(BaseEnvironment):
         self.env = launch_env()
         self.observation = None
         self.seed = None
+        self.last_dst = None
         self.preliminary_transformer = PreliminaryTransformer()
         # self.action_transformer = ActionTransformer()
 
@@ -115,8 +116,11 @@ class DuckietownEnvironmentWrapper(BaseEnvironment):
         result[0] = self.preliminary_transformer.transform(result[0])
 
         lp = self.env.get_lane_pos(self.env.cur_pos, self.env.cur_angle)
-        reward = (0.2 - np.abs(lp.dist)) + 0.4 * self.env.speed * max(0.15 - np.abs(lp.dist), 0) / 0.15
-        reward /= 0.4
+        dst = abs(lp.dist)
+        reward = self.last_dst - dst
+        if dst < 0.1:
+            reward += self.env.speed * lp.dot_dir
+        self.last_dst = dst
 
         result[1] = reward
         result = [from_numpy(data) for data in result]
@@ -125,6 +129,11 @@ class DuckietownEnvironmentWrapper(BaseEnvironment):
 
     def reset(self):
         obs = self.env.reset()
+
+        lp = self.env.get_lane_pos(self.env.cur_pos, self.env.cur_angle)
+        dst = abs(lp.dist)
+        self.last_dst = dst
+
         self.preliminary_transformer.reset(obs)
         self.observation = from_numpy(self.preliminary_transformer.transform(obs))
         return self.observation

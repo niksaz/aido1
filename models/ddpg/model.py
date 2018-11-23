@@ -76,15 +76,18 @@ class DDPG(RealModel):
         # print(observation[0, 0].max())
         # print(observation[0, 1].max())
         # print(observation[0, 2].max())
+        # print(observation[0, 3].max())
         #
         # import matplotlib.pyplot as plt
-        # f, axarr = plt.subplots(1, 3)
-        # axarr[0].imshow(observation[0, 0], cmap='gray')
-        # axarr[0].axis('off')
-        # axarr[1].imshow(observation[0, 1], cmap='gray')
-        # axarr[1].axis('off')
-        # axarr[2].imshow(observation[0, 2], cmap='gray')
-        # axarr[2].axis('off')
+        # f, axarr = plt.subplots(2, 2)
+        # axarr[0, 0].imshow(observation[0, 0], cmap='gray')
+        # axarr[0, 0].axis('off')
+        # axarr[0, 1].imshow(observation[0, 1], cmap='gray')
+        # axarr[0, 1].axis('off')
+        # axarr[1, 0].imshow(observation[0, 2], cmap='gray')
+        # axarr[1, 0].axis('off')
+        # axarr[1, 1].imshow(observation[0, 3], cmap='gray')
+        # axarr[1, 1].axis('off')
         # plt.show()
 
         with torch.no_grad():

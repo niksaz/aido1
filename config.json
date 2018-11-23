@@ -3,16 +3,11 @@
     "core": {},
     "wrapper": {
       "max_env_steps": 2000,
-      "repeat_actions": 3,
+      "repeat_actions": 1,
       "reward_scale": 1.0,
       "reward_functions": {
       },
-      "reward_aggregations": [
-        {
-          "class": "BaselineAggregationFunction",
-          "config": {}
-        }
-      ]
+      "reward_aggregations": []
     }
   },
   "model": {
@@ -23,7 +18,7 @@
           {"name": "input_channeled", "in_channels": 3},
 
           {"name": "conv_2d", "args": {
-            "in_channels": 3,
+            "in_channels": 4,
             "out_channels": 32,
             "kernel_size": 9,
             "stride": 2,
@@ -110,7 +105,7 @@
           {"name": "input_channeled", "in_channels": 3},
 
           {"name": "conv_2d", "args": {
-            "in_channels": 3,
+            "in_channels": 4,
             "out_channels": 32,
             "kernel_size": 9,
             "stride": 2,
@@ -214,8 +209,8 @@
     "update_steps_between_update": 10000,
     "critic_loss": "mse_loss",
     "global_seed": 42,
-    "log_dir": "/data/sazanovich/duckietown/cv2-norm/logs",
-    "save_dir": "/data/sazanovich/duckietown/cv2-norm/saved_models",
+    "log_dir": "/data/sazanovich/duckietown/cv2-4chan/logs",
+    "save_dir": "/data/sazanovich/duckietown/cv2-4chan/saved_models",
     "saving_replays": false,
     "replays_dir": "/mnt/junkyard/data/prosthetics/replays",
     "grad_norm": 1000.0,

@@ -53,7 +53,7 @@ class PreliminaryTransformer:
 
 
 class Transformer:
-    def __init__(self, repeat_observations=3):
+    def __init__(self, repeat_observations=4):
         self.repeat_observations = max(repeat_observations, 1)
         self.previous_observations = deque(maxlen=self.repeat_observations)
 

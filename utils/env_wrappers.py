@@ -120,6 +120,10 @@ class DuckietownEnvironmentWrapper(BaseEnvironment):
         if dst < 0.1:
             reward += self.env.speed * lp.dot_dir
         self.last_dst = dst
+        # print('speed.robot_speed', self.env.robot_speed)
+        # print('env.speed', self.env.speed)
+        # print('dot_dir', lp.dot_dir)
+        # print('reward', reward)
 
         result[1] = reward
         result = [from_numpy(data) for data in result]

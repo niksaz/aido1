@@ -26,7 +26,7 @@
             "weight_init": "xavier_normal"
           }},
           {"name": "leaky_relu"},
-          {"name": "layer_norm"},
+          {"name": "batch_norm_2d"},
 
           {"name": "conv_2d", "args": {
             "in_channels": 32,
@@ -37,7 +37,7 @@
             "weight_init": "xavier_normal"
           }},
           {"name": "leaky_relu"},
-          {"name": "layer_norm"},
+          {"name": "batch_norm_2d"},
 
           {"name": "conv_2d", "args": {
             "in_channels": 32,
@@ -48,7 +48,7 @@
             "weight_init": "xavier_normal"
           }},
           {"name": "leaky_relu"},
-          {"name": "layer_norm"},
+          {"name": "batch_norm_2d"},
 
           {"name": "conv_2d", "args": {
             "in_channels": 32,
@@ -59,7 +59,7 @@
             "weight_init": "xavier_normal"
           }},
           {"name": "leaky_relu"},
-          {"name": "layer_norm"},
+          {"name": "batch_norm_2d"},
 
           {"name": "conv_2d", "args": {
             "in_channels": 32,
@@ -70,7 +70,7 @@
             "weight_init": "xavier_normal"
           }},
           {"name": "leaky_relu"},
-          {"name": "layer_norm"},
+          {"name": "batch_norm_2d"},
 
           {"name": "flatten", "args": {"out_features": 768}}
         ]
@@ -115,7 +115,7 @@
             "weight_init": "xavier_normal"
           }},
           {"name": "leaky_relu"},
-          {"name": "layer_norm"},
+          {"name": "batch_norm_2d"},
 
           {"name": "conv_2d", "args": {
             "in_channels": 32,
@@ -126,7 +126,7 @@
             "weight_init": "xavier_normal"
           }},
           {"name": "leaky_relu"},
-          {"name": "layer_norm"},
+          {"name": "batch_norm_2d"},
 
           {"name": "conv_2d", "args": {
             "in_channels": 32,
@@ -137,7 +137,7 @@
             "weight_init": "xavier_normal"
           }},
           {"name": "leaky_relu"},
-          {"name": "layer_norm"},
+          {"name": "batch_norm_2d"},
 
           {"name": "conv_2d", "args": {
             "in_channels": 32,
@@ -148,7 +148,7 @@
             "weight_init": "xavier_normal"
           }},
           {"name": "leaky_relu"},
-          {"name": "layer_norm"},
+          {"name": "batch_norm_2d"},
 
           {"name": "conv_2d", "args": {
             "in_channels": 32,
@@ -159,7 +159,7 @@
             "weight_init": "xavier_normal"
           }},
           {"name": "leaky_relu"},
-          {"name": "layer_norm"},
+          {"name": "batch_norm_2d"},
 
           {"name": "flatten", "args": {"out_features": 768}}
         ],

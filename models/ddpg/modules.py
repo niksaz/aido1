@@ -140,6 +140,10 @@ class Net(nn.Module):
                 if 'args' not in module_config.keys():
                     module_config['args'] = {}
                     module_config['args']['num_features'] = last_shape
+            elif module_config["name"] == 'layer_norm':
+                if 'args' not in module_config.keys():
+                    module_config['args'] = {}
+                    module_config['args']['normalized_shape'] = last_shape
             elif module_name == 'flatten':
                 last_shape = module_config['args']['out_features']
 

@@ -16,6 +16,8 @@ def get_module(config):
         return nn.MaxPool2d(**config['args'])
     if config['name'] == 'batch_norm_2d':
         return nn.BatchNorm2d(**config['args'])
+    if config['name'] == 'layer_norm':
+        return nn.LayerNorm(**config['args'])
     if config['name'] == 'dropout':
         return nn.Dropout(**config['args'])
     if config['name'] == 'leaky_relu':

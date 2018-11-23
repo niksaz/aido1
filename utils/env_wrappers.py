@@ -2,15 +2,14 @@ import abc
 import gc
 import json
 import time
-import numpy as np
 
 import requests
 from requests.exceptions import RequestException
 
 from duckietown_rl.env import launch_env
 from utils.reward_shaping.env_utils import Rewarder, Transformer, \
-    PreliminaryTransformer, ActionTransformer
-from utils.util import cut_off_leg, from_numpy
+    PreliminaryTransformer
+from utils.util import from_numpy
 
 MAX_ITER = 1000
 

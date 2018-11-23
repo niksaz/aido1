@@ -53,9 +53,8 @@ class PreliminaryTransformer:
 
 
 class Transformer:
-    def __init__(self, repeat_obsservations=3, shape=(120, 160, 3)):
-        self.repeat_observations = max(repeat_obsservations, 1)
-        self.shape = shape
+    def __init__(self, repeat_observations=3):
+        self.repeat_observations = max(repeat_observations, 1)
         self.previous_observations = deque(maxlen=self.repeat_observations)
 
     def reset(self, observation):
@@ -64,11 +63,11 @@ class Transformer:
             self.previous_observations.append(observation)
 
     def transform(self, observation):
-        observs = self.previous_observations
-        observs.append(observation)
-        while len(observs) > self.repeat_observations:
-            observs.pop()
-        return np.concatenate(observs, axis=0)
+        observations = self.previous_observations
+        observations.append(observation)
+        while len(observations) > self.repeat_observations:
+            observations.pop()
+        return np.concatenate(observations, axis=0) / 255.0
 
 
 class ActionTransformer:

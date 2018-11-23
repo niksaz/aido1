@@ -72,13 +72,20 @@ class DDPG(RealModel):
         # self.critic = nn.DataParallel(self.critic)
 
     def act(self, observation, noise=0.0, cpu=False):
-        # print()
-        # print('model.act')
-        # print(observation)
-        # print()
         observation = np.array([observation], dtype=np.float32)
-        # observation_image_side = np.array([observation_image_side], dtype=np.float32)
-        # observation_image_front = np.array([observation_image_front], dtype=np.float32)
+        # print(observation[0, 0].max())
+        # print(observation[0, 1].max())
+        # print(observation[0, 2].max())
+        #
+        # import matplotlib.pyplot as plt
+        # f, axarr = plt.subplots(1, 3)
+        # axarr[0].imshow(observation[0, 0], cmap='gray')
+        # axarr[0].axis('off')
+        # axarr[1].imshow(observation[0, 1], cmap='gray')
+        # axarr[1].axis('off')
+        # axarr[2].imshow(observation[0, 2], cmap='gray')
+        # axarr[2].axis('off')
+        # plt.show()
 
         with torch.no_grad():
             action = self.actor(

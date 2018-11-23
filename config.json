@@ -15,7 +15,7 @@
     "actor": [
       {"name": "inputs", "modules": [
         [
-          {"name": "input_channeled", "in_channels": 3},
+          {"name": "input_channeled", "in_channels": 4},
 
           {"name": "conv_2d", "args": {
             "in_channels": 4,
@@ -102,7 +102,7 @@
     "critic": [
       {"name": "inputs", "modules": [
         [
-          {"name": "input_channeled", "in_channels": 3},
+          {"name": "input_channeled", "in_channels": 4},
 
           {"name": "conv_2d", "args": {
             "in_channels": 4,

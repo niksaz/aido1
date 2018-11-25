@@ -2,7 +2,7 @@
   "environment": {
     "core": {},
     "wrapper": {
-      "max_env_steps": 2000,
+      "max_env_steps": 1000,
       "repeat_actions": 1,
       "reward_scale": 1.0,
       "reward_functions": {
@@ -213,8 +213,8 @@
     "update_steps_between_update": 10000,
     "critic_loss": "mse_loss",
     "global_seed": 42,
-    "log_dir": "/data/sazanovich/duckietown/env-layer-norm/logs",
-    "save_dir": "/data/sazanovich/duckietown/env-layer-norm/saved_models",
+    "log_dir": "/data/sazanovich/duckietown/env-layer-norm-10/logs",
+    "save_dir": "/data/sazanovich/duckietown/env-layer-norm-10/saved_models",
     "saving_replays": false,
     "replays_dir": "/mnt/junkyard/data/prosthetics/replays",
     "grad_norm": 1000.0,

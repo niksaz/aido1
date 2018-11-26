@@ -2,15 +2,15 @@ import abc
 
 
 class RewardAggregationFunction:
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def __init__(self, config):
         pass
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def __call__(self, previous_observation: dict, current_observation: dict, current_reward):
         pass
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def reset(self):
         pass
 

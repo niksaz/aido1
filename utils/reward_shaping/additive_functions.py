@@ -5,15 +5,15 @@ import numpy as np
 
 
 class RewardAdditiveFunction:
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def __init__(self, config):
         pass
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def __call__(self, current_observation: dict, current_observation_transformed, action):
         pass
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def reset(self):
         pass
 
@@ -233,6 +233,6 @@ class BasePosePF(RewardAdditiveFunction):
         self.step_count = 0
         self.previous_reward = 0.
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def get_reward(self, observation_point):
         pass

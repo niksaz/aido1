@@ -6,7 +6,7 @@ import time
 import requests
 from requests.exceptions import RequestException
 
-from duckietown_rl.env import launch_env
+from utils.env import launch_env
 from utils.reward_shaping.env_utils import Rewarder, Transformer, \
     PreliminaryTransformer
 from utils.util import from_numpy
@@ -19,7 +19,7 @@ def create_env(config, internal_env_args, transfer):
     return env
 
 
-class BaseEnvironment(metaclass=abc.ABCMeta):
+class BaseEnvironment:  # (metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def step(self, action):
         pass
@@ -36,7 +36,7 @@ class BaseEnvironment(metaclass=abc.ABCMeta):
     def collect_garbage(self):
         pass
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def get_observation(self):
         pass
 
@@ -101,16 +101,13 @@ class VirtualEnvironment(BaseEnvironment):
 
 
 class DuckietownEnvironmentWrapper(BaseEnvironment):
-    def __init__(self):
-        self.env = launch_env()
+    def __init__(self, name=None):
+        self.env = launch_env(name)
         self.observation = None
         self.seed = None
-        self.last_dst = None
         self.preliminary_transformer = PreliminaryTransformer()
-        # self.action_transformer = ActionTransformer()
 
     def step(self, action):
-        # action = self.action_transformer.transform(action)
         result = list(self.env.step(action))
         result[0] = self.preliminary_transformer.transform(result[0])
         result = [from_numpy(data) for data in result]
@@ -119,10 +116,6 @@ class DuckietownEnvironmentWrapper(BaseEnvironment):
 
     def reset(self):
         obs = self.env.reset()
-
-        lp = self.env.get_lane_pos(self.env.cur_pos, self.env.cur_angle)
-        dst = abs(lp.dist)
-        self.last_dst = dst
 
         self.preliminary_transformer.reset(obs)
         self.observation = from_numpy(self.preliminary_transformer.transform(obs))
@@ -223,7 +216,7 @@ class EnvironmentWrapper(BaseEnvironment):
         total_reward_with_mod = 0.0
 
         for _ in range(self.repeat_actions):
-            observation, reward, done, _ = self.env.step(action)
+            observation, reward, done, info = self.env.step(action)
 
             if observation == 'restart':
                 raise ValueError('stepping timeout')
@@ -251,7 +244,7 @@ class EnvironmentWrapper(BaseEnvironment):
         total_reward_with_mod *= self.reward_scale
         self.total_reward += total_reward
 
-        return self.observation_transformed, (total_reward, total_reward_with_mod), done, None
+        return self.observation_transformed, (total_reward, total_reward_with_mod), done, info
 
     def get_observation(self):
         return self.observation_transformed

@@ -52,19 +52,19 @@ class BaseTrainer:
         self.critic_decay = None
         self.criterion = None
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def update(self, train_data):
         return None, None
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def average_model(self):
         pass
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def update_model_by_proxy(self):
         pass
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def update_target_model(self):
         pass
 

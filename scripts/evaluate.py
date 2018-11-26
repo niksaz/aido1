@@ -14,7 +14,7 @@ def evaluate(config, directory):
     explorer_seed = config['training']['global_seed']
     set_seeds(explorer_seed)
 
-    model = load_model(directory)
+    model = load_model(directory, load_gpu_model_on_cpu=True)
 
     internal_env_args = {'env_type': 'normal',
                          'env_init_args': {},
@@ -29,7 +29,7 @@ def evaluate(config, directory):
     j = 0
 
     while True:
-        if done:
+        if done or j > 100:
             observation = env.reset()
             env.env.env.render()
             done = False

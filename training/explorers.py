@@ -26,7 +26,7 @@ def explore_single_thread(exploration_type, config, p_id, model, internal_env_ar
     explorer.explore()
 
 
-class Explorer(metaclass=abc.ABCMeta):
+class Explorer:  # (metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def explore(self):
         pass

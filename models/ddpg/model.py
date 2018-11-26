@@ -11,11 +11,11 @@ from ..torch_utils import to_torch_tensor
 
 
 class RealModel:
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def __init__(self, config):
         pass
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def act(self, observation, noise=0.0, cpu=False):
         pass
 
@@ -23,27 +23,27 @@ class RealModel:
     PyTorch stuff
     '''
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def train(self):
         pass
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def share_memory(self):
         pass
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def hard_update(self, source):
         pass
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def to(self, device):
         pass
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def init_critic(self, source):
         pass
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def init_actor(self, source):
         pass
 
@@ -51,11 +51,11 @@ class RealModel:
     Serialization
     '''
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def save(self, config, directory, episode, reward):
         pass
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def load(self, directory):
         pass
 
@@ -157,15 +157,19 @@ class DDPG(RealModel):
     def init_actor(self, source_ddpg):
         hard_update(self.actor, source_ddpg.actor)
 
-    def load(self, directory):
-        self.actor.load_state_dict(
-            torch.load('{}/actor_state_dict.pth'.format(directory)))
-        self.critic.load_state_dict(
-            torch.load('{}/critic_state_dict.pth'.format(directory)))
-        # self.actor.load_state_dict(
-        #     torch.load('{}/actor_state_dict.pth'.format(directory), map_location=lambda storage, loc: storage))
-        # self.critic.load_state_dict(
-        #     torch.load('{}/critic_state_dict.pth'.format(directory), map_location=lambda storage, loc: storage))
+    def load(self, directory, load_gpu_model_on_cpu=False):
+        if load_gpu_model_on_cpu:
+            self.actor.load_state_dict(
+                torch.load('{}/actor_state_dict.pth'.format(directory),
+                           map_location=lambda storage, loc: storage))
+            self.critic.load_state_dict(
+                torch.load('{}/critic_state_dict.pth'.format(directory),
+                           map_location=lambda storage, loc: storage))
+        else:
+            self.actor.load_state_dict(
+                torch.load('{}/actor_state_dict.pth'.format(directory)))
+            self.critic.load_state_dict(
+                torch.load('{}/critic_state_dict.pth'.format(directory)))
 
 
 class RemoteModel:
@@ -306,10 +310,10 @@ class MultiModelWrapper(RealModel):
             make_dir_if_required(model_dir)
             self.models[i].save_weights(model_dir)
 
-    def load(self, directory):
+    def load(self, directory, load_gpu_model_on_cpu=False):
         for i in range(self._total_models):
             model_dir = '{}/{}'.format(directory, i)
-            self.models[i].load(model_dir)
+            self.models[i].load(model_dir, load_gpu_model_on_cpu)
 
     def find_index(self, target_velocity):
         return find_index(target_velocity, self.angle_dividers, self.speed_dividers, self.step_dividers)
@@ -349,10 +353,10 @@ def create_model(model_config):
     return DDPG(model_config)
 
 
-def load_model(directory):
+def load_model(directory, load_gpu_model_on_cpu=False):
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     model = create_model(parse_config(directory)['model'])
-    model.load(directory)
+    model.load(directory, load_gpu_model_on_cpu)
     model.train()
     model.to(device)
     return model

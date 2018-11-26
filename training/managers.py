@@ -24,7 +24,7 @@ from training.workers_client import (client_sampling_worker,
                                      client_action_worker)
 
 
-class BaseManager(metaclass=abc.ABCMeta):
+class BaseManager:  # (metaclass=abc.ABCMeta):
     def __init__(self):
         self.processes = []
 

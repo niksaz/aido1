@@ -58,7 +58,9 @@ class LinearWrapper(nn.Module):
             torch.nn.init.kaiming_uniform_(self.linear.weight.data)
 
     def forward(self, input):
-        return self.linear.forward(input)
+        x = self.linear.forward(input)
+        # print('LINEAR', x)
+        return x
 
 
 class Conv2dWrapper(nn.Module):

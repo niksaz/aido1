@@ -29,7 +29,7 @@ def evaluate(config, directory):
     j = 0
 
     while True:
-        if done or j > 100:
+        if done:
             observation = env.reset()
             env.env.env.render()
             done = False

@@ -45,7 +45,7 @@ def evaluate(config, directory):
         reward_sum += reward
         reward_modified_sum += reward_modified
 
-        print('{} {:.2f} {:.2f} {:.2f}'.format(j, reward, reward_modified, reward_sum))
+        print('j={} rew={:.2f} rew_mod={:.2f} rew_sum={:.2f}'.format(j, reward, reward_modified, reward_sum))
         j += config["environment"]["wrapper"]["repeat_actions"]
 
 

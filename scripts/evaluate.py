@@ -22,17 +22,17 @@ def evaluate(config, directory):
 
     env = create_env(config, internal_env_args, transfer=config['training']['transfer'])
 
+    done = True
     reward_sum = 0.0
     reward_modified_sum = 0.0
-
-    done = True
     j = 0
 
     while True:
         if done:
             observation = env.reset()
             env.env.env.render()
-            done = False
+            reward_sum = 0.0
+            reward_modified_sum = 0.0
             j = 0
             print('reset environment')
 

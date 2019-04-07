@@ -10,7 +10,7 @@ from utils.env_wrappers import create_env
 from utils.util import set_seeds, parse_config
 
 
-def evaluate(config, directory):
+def evaluate(config, directory, render_mode='human'):
     explorer_seed = config['training']['global_seed']
     set_seeds(explorer_seed)
 
@@ -30,7 +30,7 @@ def evaluate(config, directory):
     while True:
         if done:
             observation = env.reset()
-            env.env.env.render()
+            env.env.env.render(mode=render_mode)
             reward_sum = 0.0
             reward_modified_sum = 0.0
             j = 0
@@ -40,7 +40,7 @@ def evaluate(config, directory):
         print('action', action)
 
         observation, (reward, reward_modified), done, _ = env.step(action)
-        env.env.env.render()
+        env.env.env.render(mode=render_mode)
 
         reward_sum += reward
         reward_modified_sum += reward_modified
@@ -62,4 +62,4 @@ if __name__ == '__main__':
 
     config = parse_config(directory=directory)
     config["environment"]["wrapper"]["max_env_steps"] = 1000
-    evaluate(config, directory)
+    evaluate(config, directory, render_mode='top_down')

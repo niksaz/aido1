@@ -5,7 +5,7 @@ from utils.reward_shaping.additive_functions import *
 from utils.reward_shaping.aggregation_functions import *
 from collections import deque
 
-from scipy.misc import imresize
+from skimage.transform import resize
 from skimage import color
 
 DEFAULT_SEED_OFFSET = 2237
@@ -48,7 +48,7 @@ class PreliminaryTransformer:
 
         def transform(self, obs):
             white_yellow_obs = line_approx(np.array(obs, dtype=np.uint8))
-            resized = imresize(white_yellow_obs, self.shape)
+            resized = resize(white_yellow_obs, self.shape)
             return np.expand_dims(resized, axis=0)  # First dimension represents layers in torch
 
 

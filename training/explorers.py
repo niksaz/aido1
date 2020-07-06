@@ -75,11 +75,8 @@ class SingleThreadExplorer(Explorer):
         dir_pattern = '{}' + '/{}_thread_{}'.format(self.exploration_type, self.p_id)
 
         logdir = dir_pattern.format(training_config['log_dir'])
-        replays_dir = dir_pattern.format(training_config['replays_dir'])
 
         make_dir_if_required(logdir)
-        if training_config['saving_replays']:
-            make_dir_if_required(replays_dir)
 
         self.logger = Logger(logdir)
 

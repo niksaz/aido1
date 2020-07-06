@@ -194,29 +194,28 @@
     ]
   },
   "training": {
-    "transfer": true,
+    "transfer": false,
     "init_actor": false,
     "init_critic": false,
-    "model_path": "/data/sazanovich/duckietown/episode-1451-tile-14/saved_models/exploiting_virtual_thread_0/episode_2351_reward_11359.29",
+    "model_path": "",
     "num_threads_training": 1,
     "num_threads_sampling": 1,
     "multimodel_parallelism_enabled": true,
     "sampling_queue_max_len": 32,
     "num_threads_model_workers": 1,
-    "num_threads_exploring": 0,
-    "num_threads_exploring_virtual": 6,
-    "num_threads_exploiting": 0,
-    "num_threads_exploiting_virtual": 1,
+    "num_threads_exploring": 1,
+    "num_threads_exploring_virtual": 0,
+    "num_threads_exploiting": 1,
+    "num_threads_exploiting_virtual": 0,
     "every_second_random": true,
     "max_episodes": 10000,
     "max_update_steps": 16000000,
     "update_steps_between_update": 10000,
     "critic_loss": "mse_loss",
     "global_seed": 42,
-    "log_dir": "/data/sazanovich/duckietown/polished-1798/logs",
-    "save_dir": "/data/sazanovich/duckietown/polished-1798/saved_models",
+    "log_dir": "/data/sazanovich/duckietown/aw-branch/logs",
+    "save_dir": "/data/sazanovich/duckietown/aw-branch/saved_models",
     "saving_replays": false,
-    "replays_dir": "/mnt/junkyard/data/prosthetics/replays",
     "grad_norm": 1000.0,
     "grad_clip": 1.0,
     "buffer_size": 10000,
@@ -263,13 +262,13 @@
     "explore_after": 0,
 
     "server": {
-      "host_tcp": "10.100.1.186",
+      "host_tcp": "192.168.0.1",
       "port_tcp_start": 18200
     },
 
     "client": {
-      "host_tcp": "34.245.119.73",
-      "port_tcp_start": 18200
+      "host_tcp": "192.168.0.1",
+      "port_tcp_start": 18201
     }
   }
 }

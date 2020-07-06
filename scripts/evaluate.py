@@ -1,4 +1,5 @@
 import os
+import argparse
 
 os.environ["OMP_NUM_THREADS"] = "1"
 import numpy as np
@@ -58,8 +59,11 @@ def mean_confidence_interval(data, confidence=0.95):
 
 
 if __name__ == '__main__':
-    directory = 'final_models/'
+    parser = argparse.ArgumentParser()
+    parser.add_argument('directory', type=str, default='final_models')
+    args = parser.parse_args()
 
+    directory = args.directory
     config = parse_config(directory=directory)
     config["environment"]["wrapper"]["max_env_steps"] = 1000
-    evaluate(config, directory, render_mode='top_down')
+    evaluate(config, directory, render_mode='human')

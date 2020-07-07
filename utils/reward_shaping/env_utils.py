@@ -5,8 +5,8 @@ from utils.reward_shaping.additive_functions import *
 from utils.reward_shaping.aggregation_functions import *
 from collections import deque
 
-from skimage.transform import resize
-from skimage import color
+import numpy as np
+from PIL import Image
 
 DEFAULT_SEED_OFFSET = 2237
 DEFAULT_SEED_MODULO = 1000000007
@@ -40,16 +40,16 @@ class Rewarder:
 
 
 class PreliminaryTransformer:
-        def __init__(self, shape=(120, 160)):
-            self.shape = shape
+    def __init__(self, shape=(120, 160)):
+        self.shape = shape
 
-        def reset(self, observation):
-            pass
+    def reset(self, observation):
+        pass
 
-        def transform(self, obs):
-            white_yellow_obs = line_approx(np.array(obs, dtype=np.uint8))
-            resized = resize(white_yellow_obs, self.shape)
-            return np.expand_dims(resized, axis=0)  # First dimension represents layers in torch
+    def transform(self, obs):
+        white_yellow_obs = line_approx(np.array(obs, dtype=np.uint8))
+        resized = np.array(Image.fromarray(white_yellow_obs).resize(self.shape))
+        return np.expand_dims(resized, axis=0)  # First dimension represents layers in torch
 
 
 class Transformer:

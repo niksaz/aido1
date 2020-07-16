@@ -40,7 +40,7 @@ class Rewarder:
 
 
 class PreliminaryTransformer:
-    def __init__(self, shape=(64, 32)):
+    def __init__(self, shape=(64, 48)):
         self.shape = shape
 
     def reset(self, observation):

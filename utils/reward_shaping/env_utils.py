@@ -40,16 +40,19 @@ class Rewarder:
 
 
 class PreliminaryTransformer:
-    def __init__(self, shape=(120, 160)):
+    def __init__(self, shape=(64, 32)):
         self.shape = shape
 
     def reset(self, observation):
         pass
 
     def transform(self, obs):
-        white_yellow_obs = line_approx(np.array(obs, dtype=np.uint8))
-        resized = np.array(Image.fromarray(white_yellow_obs).resize(self.shape))
-        return np.expand_dims(resized, axis=0)  # First dimension represents layers in torch
+        frame_lines = line_approx(np.array(obs, dtype=np.uint8))
+        frame_lines_resized = np.array(Image.fromarray(frame_lines).resize(self.shape))
+        height, _ = frame_lines_resized.shape
+        frame_lines_clipped = frame_lines_resized[height // 3:height, :]
+        frame_lines_channeled = np.expand_dims(frame_lines_clipped, axis=0)  # First dimension is for layers in torch
+        return frame_lines_channeled
 
 
 class Transformer:

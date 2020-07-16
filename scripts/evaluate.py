@@ -5,6 +5,7 @@ os.environ["OMP_NUM_THREADS"] = "1"
 import numpy as np
 import scipy
 import scipy.stats
+import cv2
 
 from models.ddpg.model import load_model
 from utils.env_wrappers import create_env
@@ -41,7 +42,13 @@ def evaluate(config, directory, render_mode='human'):
         print('action', action)
 
         observation, (reward, reward_modified), done, _ = env.step(action)
-        env.env.env.render(mode=render_mode)
+        if render_mode == 'rgb_array':
+            rgb_array = env.env.env.render(mode=render_mode)
+            if j % 3 == 0:
+                rgb_array_file = f'samples/duckietown_simulator_{str(j).zfill(6)}.jpg'
+                cv2.imwrite(rgb_array_file, cv2.cvtColor(rgb_array, cv2.COLOR_RGB2BGR))
+        else:
+            env.env.env.render(mode=render_mode)
 
         reward_sum += reward
         reward_modified_sum += reward_modified
@@ -61,9 +68,10 @@ def mean_confidence_interval(data, confidence=0.95):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('directory', type=str, default='final_models')
+    parser.add_argument('--render_mode', type=str, default='human')
     args = parser.parse_args()
 
     directory = args.directory
     config = parse_config(directory=directory)
     config["environment"]["wrapper"]["max_env_steps"] = 1000
-    evaluate(config, directory, render_mode='human')
+    evaluate(config, directory, render_mode=args.render_mode)

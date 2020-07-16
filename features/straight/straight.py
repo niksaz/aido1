@@ -18,9 +18,8 @@ def line_approx(frame):
     # Convert BGR to HSV
     hsv = cv2.cvtColor(frame, cv2.COLOR_RGB2HSV)
 
-    # define range of blue color in HSV
-    lower_yellow = np.array([20,100,100])
-    upper_yellow = np.array([30,255,255])
+    lower_yellow = np.array([20, 100, 100])
+    upper_yellow = np.array([30, 255, 255])
     lower_white = np.array([0, 0, 150])
     upper_white = np.array([180, 60, 255])
 
@@ -31,5 +30,5 @@ def line_approx(frame):
     maskClose_yellow = kernel_filter(mask_yellow)
     maskClose_white = kernel_filter(mask_white)
 
-    final = np.maximum(maskClose_yellow // 2, maskClose_white)
+    final = maskClose_white * (maskClose_yellow == 0) + (maskClose_yellow // 2) * (maskClose_yellow != 0)
     return final

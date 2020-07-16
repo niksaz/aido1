@@ -1,2 +1,2 @@
 kernOpenSq = 5
-kernClSq = 7
+kernClSq = 5

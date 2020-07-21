@@ -7,6 +7,8 @@ import scipy
 import scipy.stats
 import cv2
 
+from pyglet.window import key
+
 from models.ddpg.model import load_model
 from utils.env_wrappers import create_env
 from utils.util import set_seeds, parse_config
@@ -23,6 +25,15 @@ def evaluate(config, directory, render_mode='human'):
                          'env_config': config['environment']['core']}
 
     env = create_env(config, internal_env_args, transfer=config['training']['transfer'])
+
+    if render_mode == 'human':
+        env.env.env.render(mode=render_mode)
+        @env.env.env.unwrapped.window.event
+        def on_key_press(symbol, modifiers):
+            if symbol == key.BACKSPACE or symbol == key.SLASH:
+                print('RESET')
+                env.reset()
+                env.env.env.render(mode=render_mode)
 
     done = True
     reward_sum = 0.0
@@ -67,7 +78,7 @@ def mean_confidence_interval(data, confidence=0.95):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('directory', type=str, default='final_models')
+    parser.add_argument('--directory', type=str, default='final_models')
     parser.add_argument('--render_mode', type=str, default='human')
     args = parser.parse_args()
 

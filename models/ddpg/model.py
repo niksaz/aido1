@@ -360,3 +360,20 @@ def load_model(directory, load_gpu_model_on_cpu=False):
     model.train()
     model.to(device)
     return model
+
+
+if __name__ == "__main__":
+    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+    directory = '.'
+
+
+    model = create_model(parse_config(directory)['model'])
+    model.train()
+    model.to(device)
+
+    input_to_net = torch.rand(4, 32, 64).numpy()
+
+    with torch.no_grad():
+        out = model.act(input_to_net)
+
+    assert out.shape[0] == 2

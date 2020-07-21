@@ -26,6 +26,8 @@ def get_module(config):
         return nn.ELU()
     if config['name'] == 'tanh':
         return nn.Tanh()
+    if config['name'] == 'sigmoid':
+        return nn.Sigmoid()
     raise AssertionError('Unknown module named ' + config['name'])
 
 

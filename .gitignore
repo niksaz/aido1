@@ -111,3 +111,6 @@ final_models/
 pytorch_models
 results/
 samples/
+
+# IDE
+.vscode

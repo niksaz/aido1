@@ -38,20 +38,34 @@ class Rewarder:
         self.previous_observation = copy.deepcopy(observation)
         return current_reward
 
-
+import cv2
 class PreliminaryTransformer:
-    def __init__(self, shape=(64, 48)):
+    def __init__(self, shape=(64, 48), use_segmentation=True, colorspace_conversion=None):
+        """
+        :param bool use_segmentation: whether to use or not segmentation (only works in simulator)
+        :param colorspace_conversion: one of cv::ColorConversionCodes (like cv2.COLOR_RGB2HSV) or None
+        """
         self.shape = shape
+        self.use_segmentation = use_segmentation
+        self.colorspace_conversion = colorspace_conversion
 
     def reset(self, observation):
         pass
 
     def transform(self, obs):
-        frame_lines = line_approx(np.array(obs, dtype=np.uint8))
-        frame_lines_resized = np.array(Image.fromarray(frame_lines).resize(self.shape))
-        height, _ = frame_lines_resized.shape
-        frame_lines_clipped = frame_lines_resized[height // 3:height, :]
-        frame_lines_channeled = np.expand_dims(frame_lines_clipped, axis=0)  # First dimension is for layers in torch
+        if self.colorspace_conversion:
+            obs = cv2.cvtColor(obs, self.colorspace_conversion)  # convert to desired colorspace
+
+        if self.use_segmentation:
+            obs = line_approx(np.array(obs, dtype=np.uint8))
+
+        frame_lines_resized = np.array(Image.fromarray(obs).resize(self.shape))
+        height = frame_lines_resized.shape[0]
+        frame_lines_clipped = frame_lines_resized[height // 3:height]
+        if frame_lines_clipped.ndim == 2:
+            frame_lines_clipped = np.expand_dims(frame_lines_clipped, axis=-1)  # add layer dimension
+
+        frame_lines_channeled = np.transpose(frame_lines_clipped, axes=(2, 0, 1))  # First dimension is for layers in torch
         return frame_lines_channeled
 
 

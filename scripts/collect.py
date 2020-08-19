@@ -8,7 +8,7 @@ import cv2
 
 from models.ddpg.model import load_model
 from utils.env import launch_env
-from utils.util import set_seeds, parse_config, from_numpy
+from utils.util import set_seeds, parse_config
 from utils.reward_shaping.env_utils import Transformer, PreliminaryTransformer
 
 
@@ -30,10 +30,6 @@ def collect(model_directory, output_dir, episodes, max_steps):
 
     env = launch_env()
     env_seed = config['environment']['core'].get('seed', global_seed)
-    print('GLOBAL SEED:', global_seed)
-    print('ENV SEED:', env_seed)
-    env.seed(env_seed)
-    env.reset()
     env.seed(env_seed)
     preprocessor = PreliminaryTransformer()
     transformer = Transformer()
@@ -42,7 +38,7 @@ def collect(model_directory, output_dir, episodes, max_steps):
     for episode in range(episodes):
         print('resetting environment')
         raw_observation = env.reset()
-        preprocessed_observation = from_numpy(preprocessor.transform(raw_observation))
+        preprocessed_observation = preprocessor.transform(raw_observation)
         transformer.reset(preprocessed_observation)
         transformed_observation = transformer.transform(preprocessed_observation)
         reward_sum = 0.0
@@ -52,18 +48,18 @@ def collect(model_directory, output_dir, episodes, max_steps):
 
             sample_filename = f'ep_{str(episode).zfill(2)}_{str(step).zfill(3)}'
             img_path = os.path.join(output_dir, sample_filename + '.png')
-            cv2.imwrite(img_path, cv2.cvtColor(raw_observation, cv2.COLOR_BGR2RGB))
+            cv2.imwrite(img_path, cv2.cvtColor(raw_observation, cv2.COLOR_RGB2BGR))
             action_path = os.path.join(output_dir, sample_filename + '.npy')
             np.save(action_path, action.astype(np.float32))
             total_samples += 1
 
             raw_observation, reward, done, info = env.step(action)
-            preprocessed_observation = from_numpy(preprocessor.transform(raw_observation))
+            preprocessed_observation = preprocessor.transform(raw_observation)
             transformed_observation = transformer.transform(preprocessed_observation)
 
             reward_sum += reward
 
-            print('j={} rew={:.2f} rew_sum={:.2f}'.format(step, reward, reward_sum))
+            print(f'step={step} rew={reward:.2f} rew_sum={reward_sum:.2f}')
             if done:
                 break
     print(f'Collected {total_samples} samples in total. The expected number was {episodes * max_steps}.')

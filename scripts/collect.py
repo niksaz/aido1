@@ -46,7 +46,7 @@ def collect(model_directory, output_dir, episodes, max_steps):
             action = model.act(transformed_observation)
             print('action', action)
 
-            sample_filename = f'ep_{str(episode).zfill(2)}_{str(step).zfill(3)}'
+            sample_filename = f'ep_{episode:02}_{step:03}'
             img_path = os.path.join(output_dir, sample_filename + '.png')
             cv2.imwrite(img_path, cv2.cvtColor(raw_observation, cv2.COLOR_RGB2BGR))
             action_path = os.path.join(output_dir, sample_filename + '.npy')
@@ -67,8 +67,8 @@ def collect(model_directory, output_dir, episodes, max_steps):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('model_directory', type=str, default='final_models/')
-    parser.add_argument('output_directory', type=str, default='samples/')
+    parser.add_argument('--model_directory', type=str, default='final_models')
+    parser.add_argument('--output_directory', type=str, default='samples')
     parser.add_argument('--episodes', type=int, default=10)
     parser.add_argument('--max_steps', type=int, default=256)
     args = parser.parse_args()

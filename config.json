@@ -7,7 +7,12 @@
       "reward_scale": 1.0,
       "reward_functions": {
       },
-      "reward_aggregations": []
+      "reward_aggregations": [],
+      "preliminary_transformer": {
+
+        "use_segmentation": true,
+        "colorspace_conversion": null
+      }
     }
   },
   "model": {

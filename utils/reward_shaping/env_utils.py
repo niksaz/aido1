@@ -47,6 +47,9 @@ class PreliminaryTransformer:
         """
         self.shape = shape
         self.use_segmentation = use_segmentation
+        if isinstance(colorspace_conversion, str):
+            assert hasattr(cv2, colorspace_conversion), f"cv2 doesn't have {colorspace_conversion} colorspace conversion method"
+            colorspace_conversion = getattr(cv2, colorspace_conversion)
         self.colorspace_conversion = colorspace_conversion
 
     def reset(self, observation):

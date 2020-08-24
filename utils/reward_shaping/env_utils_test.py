@@ -48,9 +48,9 @@ def colorspace_test():
 
     print(f'original shape: {observation.shape}')
 
-    segmenation_transformer = PreliminaryTransformer(use_segmentation=True)
-    segmenation_obs = segmenation_transformer.transform(observation)
-    save_observation_as_image(segmenation_obs, filename='with_segmentation_observation.png')
+    segmentation_transformer = PreliminaryTransformer(use_segmentation=True)
+    segmentation_obs = segmentation_transformer.transform(observation)
+    save_observation_as_image(segmentation_obs, filename='with_segmentation_observation.png')
 
     grayscale_transformer = PreliminaryTransformer(use_segmentation=False, colorspace_conversion=cv2.COLOR_RGB2GRAY)
     grayscale_obs = grayscale_transformer.transform(observation)
@@ -69,6 +69,15 @@ def colorspace_test():
     save_observation_as_image(yuv_obs, filename='yuv_observation.png', colorspace_conversion=cv2.COLOR_YUV2BGR)
 
 
+def create_from_config_test():
+    segmentation_transformer = PreliminaryTransformer(use_segmentation=True, colorspace_conversion=None)
+    grayscale_transformer = PreliminaryTransformer(use_segmentation=False, colorspace_conversion='COLOR_RGB2GRAY')
+    rgb_transformer = PreliminaryTransformer(use_segmentation=False, colorspace_conversion=None)
+    hsv_transformer = PreliminaryTransformer(use_segmentation=False, colorspace_conversion='COLOR_RGB2HSV')
+    yuv_transformer = PreliminaryTransformer(use_segmentation=False, colorspace_conversion='COLOR_RGB2YUV')
+
+
 if __name__ == '__main__':
     # main()
     colorspace_test()
+    create_from_config_test()

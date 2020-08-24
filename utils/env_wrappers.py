@@ -40,11 +40,11 @@ class BaseEnvironment:  # (metaclass=abc.ABCMeta):
     def get_observation(self):
         pass
 
-    def _create_env_from_type(self, env_init_args, internal_env_type):
+    def _create_env_from_type(self, env_init_args, internal_env_type, env_config=None):
         gc.collect()
 
         if internal_env_type == 'normal':
-            self.env = DuckietownEnvironmentWrapper(**env_init_args)
+            self.env = DuckietownEnvironmentWrapper(**env_init_args, env_config=env_config)
         elif internal_env_type == 'virtual':
             self.env = VirtualEnvironment(**env_init_args)
 
@@ -101,11 +101,12 @@ class VirtualEnvironment(BaseEnvironment):
 
 
 class DuckietownEnvironmentWrapper(BaseEnvironment):
-    def __init__(self, name=None):
+    def __init__(self, name=None, env_config=None):
         self.env = launch_env(name)
         self.observation = None
         self.seed = None
-        self.preliminary_transformer = PreliminaryTransformer()
+        preliminary_transformer_kwargs = env_config['wrapper'].get('preliminary_transformer', {})
+        self.preliminary_transformer = PreliminaryTransformer(**preliminary_transformer_kwargs)
 
     def step(self, action):
         result = list(self.env.step(action))
@@ -147,7 +148,7 @@ class EnvironmentWrapper(BaseEnvironment):
         self.transfer = transfer
 
         self.env = None
-        self._create_env_from_type(self.internal_env_init_args, self.internal_env_type)
+        self._create_env_from_type(self.internal_env_init_args, self.internal_env_type, self.env_config)
         self.env.change_model(**self.internal_env_config)
 
         observation = self.env.reset()

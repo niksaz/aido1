@@ -55,7 +55,7 @@ class ImitationEnvironment:  # (BaseEnvironment):
         return episodes
 
     def reset(self):
-        assert self.current_episode + 1 < len(self.episodes), 'All episodes passed'
+        assert self.current_episode + 1 < len(self.episodes), "All episodes passed"
         self.current_episode += 1
         self.current_step = 0
         self.errors.append([])
@@ -65,7 +65,7 @@ class ImitationEnvironment:  # (BaseEnvironment):
         """
         should return observation, reward, done, info
         """
-        assert self.current_step < len(self.episodes[self.current_episode]), 'All steps in episode passed'
+        assert self.current_step < len(self.episodes[self.current_episode]), "All steps in episode passed"
         error = np.linalg.norm(action - self.episodes[self.current_episode][self.current_step].action)
         self.errors[self.current_episode].append(error)
         self.current_step += 1
@@ -75,7 +75,7 @@ class ImitationEnvironment:  # (BaseEnvironment):
 
 
 if __name__ == "__main__":
-    logs_path = 'collected_logs/samples-collect'
+    logs_path = "collected_logs/samples-collect"
     env = ImitationEnvironment(folder_path=logs_path)
 
     obs = env.reset()

@@ -42,6 +42,7 @@ class ImitationEnvironment(gym.Env):
         all collected samples should be in `ep_{episode_number}_{step_number}` format
         also observation should be in `.png` and action in `.npy` extension
         """
+        # TODO(ybelousov) update to lazy loading if needed (to not load all in memory at once)
         episodes = []
         # first sort by episode number, than by episode step, and than by file format (action before observation)
         sorted_directory = sorted(folder_path.iterdir(), key=lambda x: (int(x.stem.split('_')[1]), int(x.stem.split('_')[2]), x.suffix))

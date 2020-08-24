@@ -7,7 +7,7 @@ from typing import List
 import cv2
 import numpy as np
 
-# from utils.env_wrappers import BaseEnvironment
+import gym
 
 @dataclass
 class EpisodeStep:
@@ -25,7 +25,7 @@ class Episode:
         return self.steps[i]
 
 
-class ImitationEnvironment:  # (BaseEnvironment):
+class ImitationEnvironment(gym.Env):
     def __init__(self, folder_path, sort_fn=None):
         """
         :param sort_fn: function to sort collected samples and return list of `Episode`

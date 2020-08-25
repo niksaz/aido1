@@ -31,7 +31,8 @@ def collect(model_directory, output_dir, episodes, max_steps):
     env = launch_env()
     env_seed = config['environment']['core'].get('seed', global_seed)
     env.seed(env_seed)
-    preprocessor = PreliminaryTransformer()
+    preliminary_transformer_kwargs = config['environment']['wrapper'].get('preliminary_transformer', {})
+    preprocessor = PreliminaryTransformer(**preliminary_transformer_kwargs)
     transformer = Transformer()
 
     total_samples = 0

@@ -44,8 +44,10 @@ class ImitationEnvironment(gym.Env):
         """
         # TODO(ybelousov) update to lazy loading if needed (to not load all in memory at once)
         episodes = []
+        # filter only needed files
+        paths = [path for path in folder_path.iterdir() if path.stem.endswith(('.png', '.npy'))]
         # first sort by episode number, than by episode step, and than by file format (action before observation)
-        sorted_directory = sorted(folder_path.iterdir(), key=lambda x: (int(x.stem.split('_')[1]), int(x.stem.split('_')[2]), x.suffix))
+        sorted_directory = sorted(paths, key=lambda x: (int(x.stem.split('_')[1]), int(x.stem.split('_')[2]), x.suffix))
         for episode_num, episode_directory in groupby(sorted_directory, lambda x: int(x.stem.split('_')[1])):
             steps = []
             for action_filename, observation_filename in zip(episode_directory, episode_directory):

@@ -62,7 +62,7 @@ class PreliminaryTransformer:
         if self.use_segmentation:
             obs = line_approx(np.array(obs, dtype=np.uint8))
 
-        frame_lines_resized = np.array(Image.fromarray(obs).resize(self.shape))
+        frame_lines_resized = np.array(Image.fromarray(obs).resize(self.shape, resample=Image.BICUBIC))
         height = frame_lines_resized.shape[0]
         frame_lines_clipped = frame_lines_resized[height // 3:height]
         if frame_lines_clipped.ndim == 2:
